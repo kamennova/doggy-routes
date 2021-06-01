@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head></head>
+<body>
+
+<th:block th:fragment="menu">
+
+<nav class="menu">
+    <a class="main-logo" href="/">
+        <span>Doggy route</span>
+    </a>
+    <ul class="menu-links">
+        <li>
+            <a href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#f8f8f8">
+                    <path d="M0 0h24v24H0V0z" fill="none"/>
+                    <path
+                            d="M14.99 4.59V5c0 1.1-.9 2-2 2h-2v2c0 .55-.45 1-1 1h-2v2h6c.55 0 1 .45 1 1v3h1c.89 0 1.64.59 1.9 1.4C19.19 15.98 20 14.08 20 12c0-3.35-2.08-6.23-5.01-7.41zM8.99 16v-1l-4.78-4.78C4.08 10.79 4 11.39 4 12c0 4.07 3.06 7.43 6.99 7.93V18c-1.1 0-2-.9-2-2z"
+                            opacity=".3"/>
+                    <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.01 17.93C7.06 19.43 4 16.07 4 12c0-.61.08-1.21.21-1.78L8.99 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41C17.92 5.77 20 8.65 20 12c0 2.08-.81 3.98-2.11 5.4z"/>
+                </svg>
+                <span>Мапа</span>
+            </a>
+        </li>
+        <li>
+            <a href="/my-routes">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#f8f8f8">
+                    <path d="M0 0h24v24H0V0z" fill="none"/>
+                    <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z"/>
+                </svg>
+                <span>Мої маршрути</span>
+            </a>
+        </li>
+        <li>
+            <a href="/my-dogs">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#f8f8f8">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <circle cx="4.5" cy="9.5" r="2.5"/>
+                    <circle cx="9" cy="5.5" r="2.5"/>
+                    <circle cx="15" cy="5.5" r="2.5"/>
+                    <circle cx="19.5" cy="9.5" r="2.5"/>
+                    <path
+                            d="M17.34 14.86c-.87-1.02-1.6-1.89-2.48-2.91-.46-.54-1.05-1.08-1.75-1.32-.11-.04-.22-.07-.33-.09-.25-.04-.52-.04-.78-.04s-.53 0-.79.05c-.11.02-.22.05-.33.09-.7.24-1.28.78-1.75 1.32-.87 1.02-1.6 1.89-2.48 2.91-1.31 1.31-2.92 2.76-2.62 4.79.29 1.02 1.02 2.03 2.33 2.32.73.15 3.06-.44 5.54-.44h.18c2.48 0 4.81.58 5.54.44 1.31-.29 2.04-1.31 2.33-2.32.31-2.04-1.3-3.49-2.61-4.8z"/>
+                </svg>
+                <span>Мої собаки</span>
+            </a>
+        </li>
+
+    </ul>
+</nav>
+</th:block>
+
+</body>
+</html>

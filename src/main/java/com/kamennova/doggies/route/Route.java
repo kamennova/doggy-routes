@@ -4,13 +4,15 @@ import com.kamennova.doggies.user.User;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "routes")
 public class Route {
-    Route(){}
+    Route() {
+    }
 
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,16 +24,16 @@ public class Route {
     private User user;
 
     @Transient
-    private List<Coordinate> coords;
+    private List<Integer> coordinates;
     private boolean isActive;
-    private float startLat;
-    private float startLng;
     private String polylineStr;
 
     Route(String polylineStr, Coordinate start, boolean isActive) {
         this.polylineStr = polylineStr;
-        this.startLat = start.getLat(); // todo
-        this.startLng = start.getLng();
+        this.isActive = isActive;
+    }
+
+    Route(List<Coordinate> coords, boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -39,11 +41,11 @@ public class Route {
         return this.id;
     }
 
-    public boolean getIsActive(){
+    public boolean getIsActive() {
         return this.isActive;
     }
 
-    public void setIsActive(boolean isActive){
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 
@@ -59,13 +61,8 @@ public class Route {
         this.polylineStr = str;
     }
 
-    public Coordinate getStart() {
-        return new Coordinate(startLat, startLng);
-    }
-
-    public void setStart(Coordinate start) {
-        this.startLng = start.getLng();
-        this.startLat = start.getLat();
+    public List<Coordinate> getReducedCoordinates() {
+        return new ArrayList<Coordinate>();
     }
 
     public void setId(Long id) {

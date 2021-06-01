@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head('Реєстрація')"></div>
+
+<body>
+
+<main class="page-content">
+
+  <div class="form-container">
+    <h2 class="page-title">Реєстрація</h2>
+    <p>Зареєструйтеся, щоб додати свої маршрути до загальної карти.</p>
+    <form name="signUp" onsubmit="event.preventDefault()">
+      <div class="form-control">
+        <label class="label" for="user-email">
+          Емейл
+        </label>
+        <input type="email" name="user-email" id="user-email" placeholder="user@email.com"/>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="user-password">
+          Пароль
+        </label>
+        <input type="password" name="user-password" id="user-password" placeholder="******"/>
+      </div>
+      <p class="form-error" id="form-errors"></p>
+
+      <button type="submit" class="btn btn-primary btn-wide" id="btn-signUp">Підтвердити</button>
+    </form>
+
+    <p class="form-tip">Є акаунт? <a href="signIn.html">Увійдіть</a></p>
+  </div>
+</main>
+<script src="js/signUp.js"></script>
+</body>
+</html>

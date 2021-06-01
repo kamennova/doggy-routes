@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<th:block th:fragment="block(dog)">
+
+    <article class="block item dog-item">
+        <h2 class="title block-title" th:content="${dog.name}"></h2>
+
+        <div class="features row">
+            <div class="feature dog-breed-wrap">
+                <img src="https://media.nature.com/lw800/magazine-assets/d41586-020-01430-5/d41586-020-01430-5_17977552.jpg"
+                     class="dog-avatar"/>
+                <span class="dog-breed">Border collie</span>
+            </div>
+
+            <div class="feature dog-age-wrap">
+                <img src="icons/cake.svg" class="icon"/>
+                <span class="dog-breed">2 years</span>
+            </div>
+
+            <div class="feature dog-sex-wrap">
+                <img src="icons/female.svg" class="icon"/>
+                <span class="dog-sex">female</span>
+            </div>
+        </div>
+        <div class="row btn-row right">
+            <button class="btn btn-smaller" onclick="deleteDog(3)">Видалити</button>
+        </div>
+    </article>
+</th:block>
+</body>
+</html>

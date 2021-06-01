@@ -1,27 +1,27 @@
 package com.kamennova.doggies.route;
 
 public class Coordinate {
-    private float lat;
-    private float lng;
+    private double lat;
+    private double lng;
 
-    Coordinate(float lat, float lng){
+    Coordinate(double lat, double lng){
         this.lat = lat;
         this.lng = lng;
     }
 
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public float getLng() {
+    public double getLng() {
         return lng;
     }
 
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public void setLng(float lng) {
+    public void setLng(double lng) {
         this.lng = lng;
     }
 }

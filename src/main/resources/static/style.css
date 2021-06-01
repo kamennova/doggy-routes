@@ -1,0 +1,384 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    position: relative;
+    font-family: "Roboto Condensed", sans-serif;
+    background: #f8f8f8;
+    line-height: 1.5;
+    --bg-light: #f8f8f8;
+    --primary-dark: #3d1104;
+    --primary: #643021;
+}
+
+p {
+    color: #606060;
+}
+
+.hidden {
+    display: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+}
+
+.map {
+    min-height: 100vh;
+}
+
+main {
+    position: relative;
+}
+
+.block {
+    background: white;
+    border: 1px solid lightgray;
+    border-radius: 14px;
+    padding: 18px 20px;
+}
+
+.btn {
+    cursor: pointer;
+    /*background: darkgrey;*/
+    color: black;
+    padding: 11px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    /*border: none;*/
+    border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.btn-smaller {
+    padding: 6px 16px;
+    font-size: 12px;
+    color: #686868;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    color: white;
+    background: var(--primary);
+    /*border-color: var(--primary-dark);*/
+    border: 2px solid var(--primary-dark);
+}
+
+.btn-wide {
+    width: 100%;
+}
+
+/*=== Common UI ===*/
+
+.menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 70px;
+    border-bottom-right-radius: 12px;
+    border-top-right-radius: 12px;
+    border-left: none;
+    background: var(--primary-dark);
+    padding: 20px 5px;
+    z-index: 200;
+}
+
+.main-logo {
+    color: white;
+    text-transform: uppercase;
+    font-size: 11px;
+    text-align: center;
+    display: inline-block;
+    margin: 0 0 40px;
+    text-decoration: none;
+}
+
+.menu-links {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+}
+
+.menu-links li {
+    margin-bottom: 26px;
+}
+
+.menu-links a {
+    display: inline-block;
+    text-decoration: none;
+    color: #f8f8f8;
+    font-size: 14px;
+}
+
+.menu-links svg {
+    width: 100%;
+    height: 28px;
+}
+
+.greeting {
+    margin-top: 0;
+}
+
+.page-content {
+    padding: 30px 90px;
+}
+
+.row {
+    display: flex;
+}
+
+.columns > div:last-of-type {
+    margin-left: 40px;
+}
+
+/*====*/
+
+.block-title {
+    font-size: 18px;
+}
+
+.dog-display {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.dog-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+
+.dogs-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item {
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.features {
+    margin: 15px 0;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    margin-right: 18px;
+    font-size: 14px;
+}
+
+.feature .icon {
+    width: 24px;
+    height: 24px;
+}
+
+.dog-age-wrap .icon {
+    margin-right: 5px;
+}
+
+.add-block {
+    position: relative;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    min-height: 120px;
+}
+
+.add-block svg {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    fill: grey;
+}
+
+.add-block .btn {
+    position: relative;
+    z-index: 100;
+}
+
+/*==========*/
+
+.modal {
+    top: 200px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 24px;
+}
+
+.close-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: transparent;
+    border: none;
+    color: grey;
+    cursor: pointer;
+    padding: 2px 0;
+}
+
+.modal-title {
+    margin-top: 0;
+    text-align: center;
+}
+
+/*=======*/
+
+.label {
+    display: inline-block;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.input-tip {
+    font-size: 12px;
+    color: darkgrey;
+    margin-bottom: 0;
+}
+
+.btn-row {
+    display: flex;
+}
+
+.form-container {
+    width: 350px;
+    margin: 0 auto;
+}
+
+input[type=text],
+input[type=date],
+input[type=email],
+input[type=password],
+input[type=number],
+select {
+    padding: 8px 10px;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: white;
+}
+
+select {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.centered {
+    justify-content: center;
+}
+
+.switcher {
+    display: flex;
+}
+
+.switcher-btn {
+    display: block;
+    padding: 2px 10px;
+    border: 3px solid grey;
+    cursor: pointer;
+}
+
+.switcher-btn:first-of-type {
+    background: #ffdfe5;
+    border-color: pink;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.switcher-btn:last-of-type {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-left: -3px;
+    background: lightblue;
+    border-color: #8dcdca;
+}
+
+.form-control {
+    margin-bottom: 18px;
+}
+
+.btn-row {
+    margin-top: 15px;
+}
+
+.btn-row button:not(:first-of-type) {
+    margin-left: 8px;
+}
+
+.form-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+/*---*/
+
+.routes-column, .route-form {
+    transition: 0.2s linear left;
+}
+
+.routes-column {
+    position: fixed;
+    /*right: 0;*/
+    left: 60px;
+    top: 0;
+    padding: 20px 20px 20px 30px;
+    width: 340px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--bg-light);
+}
+
+.routes-column.closed {
+    left: -400px;
+}
+
+.route-form {
+    position: fixed;
+    left: 80px;
+    top: 30px;
+    z-index: 100;
+}
+
+.route-form.closed {
+    left: -400px;
+}
+
+.title {
+    margin: 0;
+}
+
+.info-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: grey;
+}

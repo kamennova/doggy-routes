@@ -1,19 +1,28 @@
 package com.kamennova.doggies.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
+@RequestMapping("/api/users")
 class UserController {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final UserRepository repository;
     private final UserModelAssembler assembler;
@@ -23,7 +32,7 @@ class UserController {
         this.assembler = assembler;
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     CollectionModel<EntityModel<User>> all() {
         List<EntityModel<User>> users = repository.findAll()
                 .stream().map(assembler::toModel).collect(Collectors.toList());
@@ -31,24 +40,41 @@ class UserController {
         return CollectionModel.of(users, linkTo(methodOn(UserController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     EntityModel<User> one(@PathVariable Long id) {
         User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)));
 
         return assembler.toModel(user);
     }
 
-    @PostMapping("/users")
-    ResponseEntity<?> newUser(@RequestBody User newUser) {
-        EntityModel<User> entityModel = assembler.toModel(repository.save(newUser));
+    @PostMapping("")
+    String newUser(@RequestBody Map<String, Object> user, Errors validation) {
+        final String email = user.get("email").toString();
+        final String password = user.get("password").toString();
 
-        return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        Optional<User> existingEmail = repository.findByEmail(email);
+
+        if (existingEmail.isPresent()) {
+            validation.rejectValue("email", "user.email", "Акаунт з таким емейлом уже існує");
+        }
+
+        if (validation.hasErrors()) {
+//            m.addAttribute("errors", validation);
+//            m.addAttribute("user", user);
+            return "users/create";
+        }
+
+        final User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setPasswordHash(passwordEncoder.encode(password));
+
+        repository.save(newUser);
+
+        return "redirect:/";
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<?> replaceUser(@RequestBody User newUser, @PathVariable Long id) {
         User updatedUser = repository.findById(id)
                 .map(user -> {
@@ -65,7 +91,7 @@ class UserController {
                 .body(entityModel);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<?> deleteUser(@PathVariable Long id) {
         repository.deleteById(id);
 

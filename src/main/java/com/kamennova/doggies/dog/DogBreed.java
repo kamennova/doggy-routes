@@ -6,9 +6,12 @@ import javax.persistence.*;
 @Table(name = "dog_breed")
 public class DogBreed {
 
+    DogBreed() {
+    }
+
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Short id;
 
     private String name;
     private String imageSrc;
@@ -29,6 +32,11 @@ public class DogBreed {
         return this.imageSrc;
     }
 
-    DogBreed() {
+    public void setId(Short id){
+        this.id = id;
+    }
+
+    public Short getId(){
+        return this.id;
     }
 }

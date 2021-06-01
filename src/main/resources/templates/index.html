@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/mapHead :: head('Маршрути вигулу собак')"></head>
+
+<body>
+
+<div th:replace="fragments/menu :: menu"></div>
+
+<main>
+    <div id="map" class="map"></div>
+</main>
+<script type="text/javascript" src="/js/mapInit.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+</body>
+</html>

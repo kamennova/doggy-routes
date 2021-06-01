@@ -3,11 +3,9 @@ package com.kamennova.doggies.route;
 import java.util.List;
 
 public class RouteRequest {
-    public List<Coordinate> coords;
-    public Long userId;
+    public List<Double> coords;
 
-    RouteRequest(List<Coordinate> coords, Long userId){
+    RouteRequest(List<Double> coords){
         this.coords = coords;
-        this.userId = userId;
     }
 }
