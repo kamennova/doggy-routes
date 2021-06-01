@@ -1,19 +1,26 @@
 package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.Helpers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class RouteService {
+    @Autowired
     RouteRepository repository;
     public static final Boundary Kyiv = new Boundary(30.175930, 50.588778, 30.865690, 50.280173);
 
-    RouteService(RouteRepository repository) {
-        this.repository = repository;
+    public List<HashMap<String, String>> getRoutesInfoOfUser(Long userId){
+        return repository.findByUserId(userId).stream().map(route -> {
+            final HashMap<String, String> obj = new HashMap<>();
+            obj.put("length", route.getLength().toString());
+            obj.put("coords", route.getFullCoordinates().toString());
+
+            return obj;
+        }).collect(Collectors.toList());
     }
 
     /**

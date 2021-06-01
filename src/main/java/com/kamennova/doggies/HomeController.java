@@ -1,49 +1,52 @@
 package com.kamennova.doggies;
 
+import com.kamennova.doggies.dog.DogService;
+import com.kamennova.doggies.route.RouteService;
 import com.kamennova.doggies.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.security.Principal;
 
 @Controller
 public class HomeController {
-    @GetMapping("/index")
-    public String index() {
-        return "index";
-    }
+    @Autowired
+    public DogService dogService;
 
-    @GetMapping("/")
-    public String indexShort(Model model) {
-        model.addAttribute("msg", "Howdy, World");
+    @Autowired
+    public RouteService routeService;
+
+    @GetMapping(value = {"/", "/index"})
+    public String index(Model model) {
         return "index";
     }
 
     @GetMapping("/my-dogs")
     public String myDogs(Model model, @AuthenticationPrincipal User principal) {
-        System.out.println(principal);
-        final String email = (principal != null ? principal.getEmail() : "default");
-        model.addAttribute("userEmail", email);
+        if (principal == null) return "signIn";
 
-        if(principal != null){
-            model.addAttribute("dogs", principal.getDogs());
-        }
+        model.addAttribute("userEmail", principal.getEmail());
+        model.addAttribute("dogs", dogService.getDogsInfoOfOwner(principal.getId()));
 
         return "dogs";
     }
 
     @GetMapping("my-routes")
-    public String myRoutes(Model model, Principal principal) {
+    public String myRoutes(Model model, @AuthenticationPrincipal User principal) {
+        if (principal == null) {
+            return "signIn";
+        }
+
+        model.addAttribute("userEmail", principal.getEmail());
+        model.addAttribute("routes", routeService.getRoutesInfoOfUser(principal.getId()));
+
         return "routes";
     }
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
-        model.addAttribute("name", name);
-        return "greeting";
+    @GetMapping("/about")
+    public String about() {
+        return "about";
     }
 
     @GetMapping("/signUp")

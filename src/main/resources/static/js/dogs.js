@@ -62,7 +62,13 @@ document.getElementById("btn-save-dog").addEventListener("click", () => {
         document.getElementById("add-dog-modal").classList.add("hidden");
         setError("");
         dogForm.reset();
-        dogCreateReq(data).then(res => console.log("created", res));
+        dogCreateReq(data).then(res => {
+            if (res.error) {
+                setError(res.error);
+            } else {
+                document.location.href = "/my-dogs";
+            }
+        });
     } else {
         setError(error);
     }

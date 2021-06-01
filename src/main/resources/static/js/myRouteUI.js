@@ -15,6 +15,12 @@ const closeRoutesCol = () => routesCol.classList.add("closed");
 // on route form open
 document.getElementById("btn-add-route").addEventListener("click", () => {
     closeRoutesCol();
+
+    const routesNum = document.getElementsByClassName("route-item").length;
+    if (routesNum > 0) {
+        document.getElementById("new-route-index").innerText = routesNum + 1;
+    }
+
     setTimeout(showRouteForm, AnimationDuration);
     setTimeout(clearMap, AnimationDuration * 2);
 });

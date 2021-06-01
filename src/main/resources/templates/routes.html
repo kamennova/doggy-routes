@@ -10,16 +10,11 @@
 
   <article class="route-form block closed" id="route-form">
     <h5 class="title info-title action">Новий маршрут</h5>
-    <h2 class="title route-name">Маршрут #2</h2>
+    <h2 class="title route-name">Маршрут #<span id="new-route-index">1</span></h2>
 
     <div class="features row">
-      <span class="feature dog-display">
-      <img src="https://media.nature.com/lw800/magazine-assets/d41586-020-01430-5/d41586-020-01430-5_17977552.jpg"
-           class="dog-avatar"/>
-        <span class="dog-name">Joe</span>
-      </span>
       <div class="feature">
-        <span>Length: <span class="route-length">0</span>m </span>
+        <span><span class="route-length">0</span>м </span>
       </div>
     </div>
 
@@ -31,18 +26,15 @@
   </article>
 
   <aside class="routes-column" id="routes-sidebar">
+    <header th:replace="fragments/greeting :: greeting(${userEmail})"></header>
+
     <h2 class="page-title">Мої маршрути</h2>
 
-    <article class="route-item item block" id="route-2">
-      <h2 class="title block-title">Route #2</h2>
+    <article class="route-item item block" id="route-2" th:if="${routes}" th:each="route,index : ${routes}">
+      <h2 class="title block-title" th:text="'Маршрут #' + ${index+1}"></h2>
       <div class="features row">
-      <span class="feature dog-display">
-      <img src="https://media.nature.com/lw800/magazine-assets/d41586-020-01430-5/d41586-020-01430-5_17977552.jpg"
-           class="dog-avatar"/>
-        <span class="dog-name">Joe</span>
-      </span>
         <div class="feature">
-          <span>Length: <span class="route-length">0</span>m </span>
+          <span><span class="route-length" th:text="${route.length}"></span>м </span>
         </div>
       </div>
       <div class="row btn-row">
@@ -51,7 +43,7 @@
       </div>
     </article>
 
-    <article class="block item route-item add-block">
+    <article class="block item add-block">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000">
         <path d="M0 0h24v24H0V0z" fill="none"/>
         <path
@@ -59,13 +51,12 @@
       </svg>
       <button class="btn btn-primary" id="btn-add-route">Додати</button>
     </article>
-
   </aside>
 
   <article class="block modal delete-modal hidden" id="delete-route-modal">
     <button class="close-btn">Закрити</button>
 
-    <h4 class="modal-title">Ви впевнені, що хочете видалити?</h4>
+    <h4 class="modal-title">Ви впевнені, що хочете видалити цей маршрут?</h4>
     <div class="row btn-row centered">
       <button class="btn btn-primary" id="btn-confirm-delete">Видалити</button>
     </div>

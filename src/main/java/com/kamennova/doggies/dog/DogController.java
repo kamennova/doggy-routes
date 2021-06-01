@@ -49,7 +49,7 @@ public class DogController {
         final String name = dog.get("name").toString();
         final Dog.Sex sex = dog.get("sex").toString().equals("female") ? Dog.Sex.Female : Dog.Sex.Male;
         final int yearBorn = Integer.parseInt(dog.get("yearBorn").toString());
-        final int breedId = Integer.parseInt(dog.get("breedId").toString());
+        final Short breedId = Short.parseShort(dog.get("breedId").toString());
 
         final Optional<DogBreed> breed = breedRepository.findById(breedId);
         System.out.println(user);

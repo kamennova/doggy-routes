@@ -5,6 +5,7 @@ import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +28,7 @@ public class Route {
     private List<Integer> coordinates;
     private boolean isActive;
     private String polylineStr;
+    private Integer length;
 
     Route(String polylineStr, Coordinate start, boolean isActive) {
         this.polylineStr = polylineStr;
@@ -39,6 +41,14 @@ public class Route {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Integer getLength() {
+        return this.length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     public boolean getIsActive() {
@@ -59,6 +69,11 @@ public class Route {
 
     public void setPolylineStr(String str) {
         this.polylineStr = str;
+    }
+
+    public List<Coordinate> getFullCoordinates(){
+//        return this.coordinates;
+        return Collections.emptyList();
     }
 
     public List<Coordinate> getReducedCoordinates() {
