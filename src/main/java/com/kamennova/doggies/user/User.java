@@ -17,6 +17,8 @@ public class User {
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String passwordHash;
 
     @OneToMany(targetEntity = Dog.class, cascade = CascadeType.REMOVE)
@@ -29,6 +31,12 @@ public class User {
     User(String email, String passwordHash) {
         this.email = email;
         this.passwordHash = passwordHash;
+    }
+
+    User(User user) {
+        this.id = user.id;
+        this.passwordHash = user.passwordHash;
+        this.email = user.email;
     }
 
     public String getPasswordHash() {

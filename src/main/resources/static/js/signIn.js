@@ -4,13 +4,13 @@ const getData = () => {
     const data = new FormData(signInForm);
 
     return {
-        email: data.get("user-email"),
+        username: data.get("user-email"),
         password: data.get("user-password"),
     };
 };
 
 const validateData = (data) => {
-    if (data.email.length === 0) {
+    if (data.username.length === 0) {
         return "Будь ласка, введіть емейл";
     } else if (data.password.length === 0) {
         return "Будь ласка, введіть пароль";
@@ -20,11 +20,11 @@ const validateData = (data) => {
 };
 
 const signInReq = (data) => {
-    return fetch(`${API_URL_BASE}/auth/signIn`, {
+    return fetch(`/signIn`, {
         method: "POST",
-        body: JSON.stringify(data),
+        body: encodeURI(`username=${data.username}&password=${data.password}`),
         headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/x-www-form-urlencoded',
         }
     }).then(res => res.json());
 };

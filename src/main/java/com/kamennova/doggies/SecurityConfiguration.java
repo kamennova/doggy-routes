@@ -1,8 +1,6 @@
 package com.kamennova.doggies;
 
 import com.kamennova.doggies.user.User;
-import com.kamennova.doggies.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +16,6 @@ import org.springframework.web.cors.CorsConfiguration;
 @ComponentScan(basePackageClasses = User.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserService userService;
-
     @Bean(name = "passwordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -28,24 +23,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        http.csrf().disable();
-
         http
+                .cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()).and()
+                .csrf().disable()
                 .formLogin()
                 .loginPage("/signIn")
-                .defaultSuccessUrl("/my-routes")
-                .permitAll()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/signUp")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/login?logout") // append a query string value
-                .and()
-                .authorizeRequests()
-                .antMatchers("/my-dogs", "/my-routes", "/my-dogs")
-                .authenticated();
+                .antMatchers("/", "/signIn*", "/signUp*", "/api/users", "/img/**", "/js/**", "/css/**").permitAll()
+                .anyRequest().authenticated();
     }
 }
