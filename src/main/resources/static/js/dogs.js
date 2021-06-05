@@ -74,6 +74,15 @@ document.getElementById("btn-save-dog").addEventListener("click", () => {
     }
 });
 
+let DeleteDogId;
+
+const deleteDog = (e) => {
+    DeleteDogId = Number(e.path[0].dataset.id);
+    document.getElementById("delete-dog-modal").classList.remove("hidden");
+}
+
+document.querySelectorAll(".delete-dog-btn").forEach((btn) => btn.addEventListener("click", deleteDog));
+
 const deleteDogReq = (id) => {
     return fetch(`${API_URL_BASE}/dogs/${id}`, {
         method: "DELETE",

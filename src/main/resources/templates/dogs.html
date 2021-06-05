@@ -2,14 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head('Мої собаки')"></div>
 <body>
-<script>
-      let DeleteDogId;
-
-      function deleteDog(id) {
-          DeleteDogId = id;
-          document.getElementById("delete-dog-modal").classList.remove("hidden");
-      }
-</script>
 <div th:replace="fragments/menu :: menu"></div>
 
 <main class="page-content">
@@ -20,10 +12,10 @@
 
     <div class="dogs-container">
         <article class="block item dog-item" th:if="${dogs}" th:each="dog : ${dogs}">
-            <div class="row">
+            <div class="row block-header">
                 <h2 class="title block-title" th:text="${dog.name}"></h2>
-                <img src="icons/female.svg" class="icon" th:if="${dog.sex.equals('Female')}"/>
-                <img src="icons/male.svg" class="icon" th:if="${dog.sex.equals('Male')}"/>
+                <img src="img/female.svg" class="icon" th:if="${dog.sex.equals('Female')}"/>
+                <img src="img/male.svg" class="icon" th:if="${dog.sex.equals('Male')}"/>
             </div>
 
             <div class="features row">
@@ -33,7 +25,7 @@
                 </div>
 
                 <div class="feature dog-age-wrap">
-                    <img src="icons/cake.svg" class="icon"/>
+                    <img src="img/cake.svg" class="icon"/>
                     <span class="dog-breed" th:switch="${dog.age}">
                         <span th:case="0">Менше року</span>
                         <span th:case="1">1 рік</span>
@@ -42,7 +34,7 @@
                 </div>
             </div>
             <div class="row btn-row right">
-                <button class="btn btn-smaller" th:onclick="deleteDog(${dog.id}})">Видалити</button>
+                <button class="btn btn-smaller delete-dog-btn" th:data-id="${dog.id}">Видалити</button>
             </div>
         </article>
 
@@ -113,21 +105,19 @@
             </div>
 
             <div class="row columns">
-                <div class="form-control">
+                <div class="form-control" th:if="${breeds}" >
                     <label class="label" for="dog-breed">
                         Порода
                     </label>
 
-                    <select name="dog-breed" id="dog-breed">
-                        <option value="1">Бордер-коллі</option>
-                        <option value="2">Пудель</option>
-                        <option value="3">Хаскі</option>
+                    <select name="dog-breed" id="dog-breed" >
+                        <option th:each="breed : ${breeds}" th:value="${breed.id}" th:text="${breed.name}"></option>
                     </select>
                 </div>
 
                 <div class="form-control">
                     <label class="label" for="dog-year-born">Рік народження</label>
-                    <input type="number" name="dog-year-born" id="dog-year-born"/>
+                    <input type="number" min="1996" max="2021" placeholder="2010" name="dog-year-born" id="dog-year-born"/>
                 </div>
             </div>
 
