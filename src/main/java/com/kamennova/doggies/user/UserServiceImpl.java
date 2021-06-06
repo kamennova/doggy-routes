@@ -1,13 +1,8 @@
 package com.kamennova.doggies.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,28 +20,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public void authenticate(User user) {
-        UserDetails userDetails = new UserWithRole(user, "USER_ROLE");
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                user.getPasswordHash(),
-                userDetails.getAuthorities()
-        );
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(auth);
-    }
+    public String validate(String email, String password){
+        Optional<User> existingEmail = userRepository.findByEmail(email);
 
-    public boolean isLoggedIn() {
-        return !(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken);
-    }
-
-    public User getSignedInUser() {
-        if (!isLoggedIn()) {
-            return null;
+        if (existingEmail.isPresent()) {
+            return "Акаунт з таким емейлом уже існує";
+        } else if (password.length() < 5) {
+            return "Пароль має містити хоча б 5 символів";
         }
 
-        User sessionUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return sessionUser;
+        return "";
     }
 }

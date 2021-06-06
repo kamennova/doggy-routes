@@ -19,15 +19,13 @@ const validateData = (data) => {
     return null;
 };
 
-const signInReq = (data) => {
-    return fetch(`/signIn`, {
+const signInReq = (data) => fetch(`/signIn`, {
         method: "POST",
         body: encodeURI(`username=${data.username}&password=${data.password}`),
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
-    }).then(res => res.json());
-};
+    });
 
 const displayError = (error) => {
     document.getElementById("form-errors").innerText = error;
@@ -43,10 +41,10 @@ document.getElementById("btn-signIn").addEventListener("click", () => {
         displayError("");
 
         signInReq(data).then(res => {
-            if (res.error) {
-                displayError(res.error);
+            if (res.url.includes('error')) {
+                document.location.href = '/signIn?error'
             } else {
-                document.location.href = 'http://localhost:9090/my-routes'
+                document.location.href = res.url;
             }
         });
     }

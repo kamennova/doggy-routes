@@ -7,5 +7,5 @@ public interface UserService {
 
     User save(User user);
 
-    void authenticate(User user);
+    String validate(String email, String password);
 }

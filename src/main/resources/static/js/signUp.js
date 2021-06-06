@@ -43,6 +43,12 @@ document.getElementById("btn-signUp").addEventListener("click", () => {
         displayError(error);
     } else {
         displayError("");
-        signUpReq(data).then(res => console.log(res));
+        signUpReq(data).then(res => {
+            if (res.error) {
+                displayError(res.error);
+            } else {
+                document.location.href = "/signIn";
+            }
+        });
     }
 });

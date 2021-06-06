@@ -69,15 +69,14 @@ public class HomeController {
     }
 
     @GetMapping("/signIn")
-    public String signIn(HttpServletRequest request) {
+    public String signIn(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
-        String errorMessage;
 
         if (session != null) {
             AuthenticationException ex = (AuthenticationException) session
                     .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
             if (ex != null) {
-                errorMessage = ex.getMessage();
+                model.addAttribute("error", ex.getMessage());
             }
         }
 

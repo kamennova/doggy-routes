@@ -25,7 +25,9 @@
         <input type="password" name="user-password" id="user-password" placeholder="******"/>
       </div>
 
-      <p class="form-error" id="form-errors"></p>
+      <p class="form-error" id="form-errors">
+        <span th:if="${error}" th:text="${error}"></span>
+      </p>
 
       <button type="submit" id="btn-signIn" class="btn btn-primary btn-wide">Підтвердити</button>
     </form>
