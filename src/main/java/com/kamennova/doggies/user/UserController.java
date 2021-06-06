@@ -22,10 +22,10 @@ class UserController {
 
     @PostMapping("")
     @ResponseBody
-    HashMap<String, String> newUser(@RequestBody Map<String, Object> user) {
+    HashMap<String, String> newUser(@RequestBody Map<String, String> user) {
         HashMap<String, String> res = new HashMap<>();
-        final String email = user.get("email").toString();
-        final String password = user.get("password").toString();
+        final String email = user.get("email");
+        final String password = user.get("password");
         final String error = service.validate(email, password);
 
         if (!error.isBlank()) {

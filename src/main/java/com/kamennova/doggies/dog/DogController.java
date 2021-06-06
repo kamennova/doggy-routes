@@ -38,8 +38,8 @@ public class DogController {
         final Dog.Sex sex = dog.get("sex").toString().equals("female") ? Dog.Sex.Female : Dog.Sex.Male;
         final int yearBorn = Integer.parseInt(dog.get("yearBorn").toString());
         final Short breedId = Short.parseShort(dog.get("breedId").toString());
-
         final Optional<DogBreed> breed = breedRepository.findById(breedId);
+
         final String error = dogService.validate(name, breed, yearBorn);
 
         if (!error.isEmpty()) {

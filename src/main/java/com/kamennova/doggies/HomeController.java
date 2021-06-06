@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
 
 @Controller
 public class HomeController {
@@ -35,8 +33,6 @@ public class HomeController {
 
     @GetMapping("/my-dogs")
     public String myDogs(Model model, @AuthenticationPrincipal User principal) {
-        if (principal == null) return "signIn";
-
         model.addAttribute("userEmail", principal.getEmail());
         model.addAttribute("dogs", dogService.getDogsInfoOfOwner(principal.getId()));
         model.addAttribute("breeds", dogService.getBreedsInfo());
@@ -46,13 +42,8 @@ public class HomeController {
 
     @GetMapping("my-routes")
     public String myRoutes(Model model, @AuthenticationPrincipal User principal) {
-        if (principal == null) {
-            return "";
-        }
-
         model.addAttribute("userEmail", principal.getEmail());
-        final List<HashMap<String, String>> routesInfo = routeService.getRoutesInfoOfUser(principal.getId());
-        model.addAttribute("routes", routesInfo);
+        model.addAttribute("routes", routeService.getRoutesInfoOfUser(principal.getId()));
         model.addAttribute("areActive", dogRepository.userHasDogs(principal.getId()));
 
         return "routes";
