@@ -74,6 +74,11 @@ main {
     border: 1px solid var(--primary-dark);
 }
 
+.btn-primary:hover {
+    background: #703e2f;
+    border-color: #703e2f;
+}
+
 .btn-wide {
     width: 100%;
 }
@@ -282,6 +287,14 @@ main {
 
 .btn-row {
     display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    align-items: flex-start;
+}
+
+.btn-row button:not(:last-of-type) {
+    margin-right: 8px;
+    margin-bottom: 8px;
 }
 
 .form-container {
@@ -341,14 +354,6 @@ select {
     margin-bottom: 18px;
 }
 
-.btn-row {
-    margin-top: 15px;
-}
-
-.btn-row button:not(:first-of-type) {
-    margin-left: 8px;
-}
-
 .form-error {
     color: red;
     font-size: 14px;
@@ -373,10 +378,28 @@ select {
     height: 100vh;
     background: var(--bg-light);
     border-right: 1px solid lightgrey;
+    overflow: scroll;
+}
+
+.routes-column::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.routes-column::-webkit-scrollbar {
+    width: 10px;
+}
+
+.routes-column::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    background-color: #e1e1e1;
 }
 
 .routes-column.closed {
     left: -400px;
+}
+
+.routes-column .add-block {
+    min-width: 100px;
 }
 
 .route-form {
@@ -384,6 +407,19 @@ select {
     left: 120px;
     top: 30px;
     z-index: 100;
+}
+
+.route-item, .routes-column .add-block {
+    margin-right: 0;
+}
+
+.route-item > .row:first-of-type {
+    align-items: center;
+}
+
+.route-item .edit-btn {
+    padding: 5px !important;
+    margin-left: auto;
 }
 
 .route-form.closed {

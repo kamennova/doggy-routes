@@ -38,11 +38,11 @@ const vectorLayer = new ol.layer.Vector({
 
 });
 
-map.on('pointermove', function (e) {
+/*map.on('pointermove', function (e) {
     if (e.dragging) return;
     const hit = map.hasFeatureAtPixel(map.getEventPixel(e.originalEvent));
     map.getTargetElement().style.cursor = hit ? 'pointer' : '';
-});
+}); */
 
 map.addLayer(vectorLayer);
 
@@ -53,8 +53,4 @@ const addLineToMap = (polylineStr) => {
     const feature = poly.readFeature(polylineStr);
     feature.getGeometry().transform('EPSG:4326', 'EPSG:3857'); // coordinates from API come in diff. format
     vectorSource.addFeature(feature);
-};
-
-const drawAllRoutes = () => {
-    routes.forEach(route => addLineToMap(route));
 };
