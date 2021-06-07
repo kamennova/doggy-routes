@@ -4,8 +4,6 @@ import com.kamennova.doggies.user.User;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,27 +18,38 @@ public class Route {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     @NotNull
     private User user;
 
-    @Transient
-    private List<Integer> coordinates;
+    @Column(name="user_id", nullable  = false)
+    private Long userId;
+
+    private Double startLat;
+    private Double startLng;
+
+    @Column(name = "coordinates")
+    private String compressedCoordinates;
+
     private boolean isActive;
-    private String polylineStr;
     private Integer length;
 
-    Route(String polylineStr, Coordinate start, boolean isActive) {
-        this.polylineStr = polylineStr;
+    Route(List<Coordinate> coords, User user, boolean isActive, Integer length) {
+        this.user = user;
         this.isActive = isActive;
-    }
-
-    Route(List<Coordinate> coords, boolean isActive) {
-        this.isActive = isActive;
+        this.length = length;
+        this.startLat = coords.get(0).getLat();
+        this.startLng = coords.get(0).getLng();
+        this.compressedCoordinates = CoordinatesCoder.encode(coords);
+        System.out.println(compressedCoordinates);
     }
 
     public Long getId() {
         return this.id;
+    }
+
+    public Long getUserId() {
+        return this.userId;
     }
 
     public Integer getLength() {
@@ -63,21 +72,20 @@ public class Route {
         return this.user;
     }
 
-    public String getPolylineStr() {
-        return this.polylineStr;
+    public List<Coordinate> getFullCoordinates() {
+        return CoordinatesCoder.decode(this.compressedCoordinates, this.getStart());
     }
 
-    public void setPolylineStr(String str) {
-        this.polylineStr = str;
+    public Coordinate getStart() {
+        return new Coordinate(startLat, startLng);
     }
 
-    public List<Coordinate> getFullCoordinates(){
-//        return this.coordinates;
-        return Collections.emptyList();
+    public String getCompressedCoordinates() {
+        return this.compressedCoordinates;
     }
 
-    public List<Coordinate> getReducedCoordinates() {
-        return new ArrayList<Coordinate>();
+    public void setCompressedCoordinates(String encoded) {
+        this.compressedCoordinates = encoded;
     }
 
     public void setId(Long id) {
@@ -86,6 +94,7 @@ public class Route {
 
     public void setUser(User user) {
         this.user = user;
+        this.userId = user.getId();
     }
 
     @Override
@@ -95,16 +104,16 @@ public class Route {
         if (!(o instanceof Route))
             return false;
         Route route = (Route) o;
-        return Objects.equals(this.id, route.id) && Objects.equals(this.polylineStr, route.polylineStr);
+        return Objects.equals(this.id, route.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.polylineStr);
+        return Objects.hash(this.id, this.startLat);
     }
 
     @Override
     public String toString() {
-        return "Route{" + "id=" + this.id + ", polyline='" + this.polylineStr + "'}";
+        return "Route{" + "id=" + this.id + ", polyline='" + this.startLng + "'}";
     }
 }
