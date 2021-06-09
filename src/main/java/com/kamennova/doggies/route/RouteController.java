@@ -1,6 +1,7 @@
 package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.dog.DogRepository;
+import com.kamennova.doggies.route.geom.DoubleCoordinate;
 import com.kamennova.doggies.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,11 +25,11 @@ public class RouteController {
 
     @PostMapping(value = "", consumes = "application/json")
     @ResponseBody
-    public HashMap<String, String> newRoute(@RequestBody RouteRequest body, @AuthenticationPrincipal User user) {
-        final HashMap<String, String> res = new HashMap<>();
-        final List<Coordinate> coords = service.foldToCoordinates(body.coordinates);
-        final int length = 123; // todo
-        final String coordsError = service.validateCoordinates(coords);
+    public HashMap<String, Object> newRoute(@RequestBody RouteRequest body, @AuthenticationPrincipal User user) {
+        final HashMap<String,Object> res = new HashMap<>();
+        final List<DoubleCoordinate> coords = service.foldToCoordinates(body.coordinates);
+        final int length = service.getRouteLength(coords);
+        final String coordsError = service.validateCoordinates(coords, length);
 
         if (!coordsError.isEmpty()) {
             res.put("error", coordsError);
@@ -40,14 +41,19 @@ public class RouteController {
         repository.save(route);
 
         res.put("status", "ok");
-        res.put("id", route.getId().toString());
+        res.put("id", route.getId());
         return res;
     }
 
     @GetMapping("")
-    HashMap<String, Object> findRoutesNear(@RequestParam Double lat, @RequestParam Double lng, @RequestParam int zoom) {
+    HashMap<String, Object> findRoutesNear(@RequestParam Double lat, @RequestParam Double lng, @RequestParam Float zoom) {
         HashMap<String, Object> res = new HashMap<>();
-        res.put("lines", service.findActiveNear(new Coordinate(lat, lng)));
+
+        if (zoom < 4.5) {
+            res.put("overview", service.getRoutesOverview());
+        } else {
+            res.put("lines", service.findRoutesNear(new DoubleCoordinate(lat, lng)));
+        }
 
         return res;
     }

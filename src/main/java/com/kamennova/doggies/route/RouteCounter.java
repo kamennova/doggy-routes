@@ -1,9 +1,11 @@
 package com.kamennova.doggies.route;
 
-import com.kamennova.doggies.Helpers;
+import com.kamennova.doggies.route.geom. DoubleCoordinate;
+import com.kamennova.doggies.route.geom.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RouteCounter {
     private final HashMap<Vector, Set<Long>> store;
@@ -12,18 +14,31 @@ public class RouteCounter {
         this.store = new HashMap<>();
     }
 
-    public void put(Vector vector, Long userId) {
-        final Set<Long> idSet = store.getOrDefault(vector, new HashSet<>());
-        if(idSet.size() > 0){
-            System.out.println(idSet);
-        }
-        idSet.add(userId);
-        System.out.println(userId);
-        if(idSet.size() > 1){
+    public RouteCounter(List<Route> routes) {
+        this.store = new HashMap<>();
 
-            System.out.println(userId);
-            System.out.println(idSet);
+        for (final Route route : routes) {
+            final List<DoubleCoordinate> coords = route.getFullCoordinates();
+
+            DoubleCoordinate prev = coords.get(0);
+
+            for (int i = 1; i < coords.size(); i++) {
+                final DoubleCoordinate curr = coords.get(i);
+                Vector vector = formVector(prev, curr);
+                this.put(vector, route.getUserId());
+                prev = curr;
+            }
         }
+    }
+
+    private Vector formVector(DoubleCoordinate a, DoubleCoordinate b) {
+        return a.getLng() < b.getLng() ||
+                a.getLng() == b.getLng() && a.getLat() < b.getLat() ? new Vector(a, b) : new Vector(b, a);
+    }
+
+    private void put(Vector vector, Long userId) {
+        final Set<Long> idSet = store.getOrDefault(vector, new HashSet<>());
+        idSet.add(userId);
         store.put(vector, idSet);
     }
 
@@ -40,21 +55,56 @@ public class RouteCounter {
         return 1; // todo
     }
 
-    public List<HashMap<String, Object>> merge() {
-        final HashMap<Set<Long>, ArrayList<Vector>> grouped = new HashMap<>();
+    private List<CounterResult> merge() {
+        final HashMap<Set<Long>, ArrayList<Vector>> usersRoutes = new HashMap<>();
 
-        store.entrySet().forEach(entry -> {
-            final ArrayList<Vector> upd = grouped.getOrDefault(entry.getValue(), new ArrayList<>());
-            upd.add(entry.getKey());
-            grouped.put(entry.getValue(), upd);
+        store.forEach((vector, userIds) -> {
+            final ArrayList<Vector> existingRoutes = usersRoutes.getOrDefault(userIds, new ArrayList<>());
+            existingRoutes.add(vector);
+            usersRoutes.put(userIds, existingRoutes);
         });
 
-        return grouped.entrySet().stream().map(entry -> {
-            final HashMap<String, Object> res = new HashMap<>();
-            res.put("route", entry.getValue());
-            res.put("ids", entry.getKey());
+        return usersRoutes.entrySet().stream()
+                .map(entry -> new CounterResult(entry.getKey(), vectorsToRoutes(entry.getValue())))
+                .collect(Collectors.toList());
+    }
 
-            return res;
-        }).collect(Collectors.toList());
+    private Vector getRouteVector(ArrayList<DoubleCoordinate> coords) {
+        return new Vector(coords.get(0), coords.get(coords.size() - 1));
+    }
+
+    private ArrayList<ArrayList<DoubleCoordinate>> vectorsToRoutes(ArrayList<Vector> vectors) {
+        final ArrayList<ArrayList<DoubleCoordinate>> routes = new ArrayList<>();
+
+        for (Vector vector : vectors) {
+            final OptionalInt keySearch = IntStream.range(0, routes.size())
+                    .filter(i -> vector.isAdjacent(getRouteVector(routes.get(i))))
+                    .findFirst();
+
+            if (keySearch.isEmpty()) {
+                routes.add(vector.toCoordinates());
+                continue;
+            }
+
+            final ArrayList<DoubleCoordinate> route = routes.get(keySearch.getAsInt());
+            final List<Character> adjacency = vector.getAdjacency(getRouteVector(route));
+            final DoubleCoordinate toAdd = adjacency.get(1) == 'b' ? vector.b : vector.a;
+
+            if (adjacency.get(0) == 'a') {
+                route.add(0, toAdd);
+            } else {
+                route.add(toAdd);
+            }
+        }
+
+        return routes;
+    }
+
+    private ArrayList<Double> vectorToCoordinates(Vector vector) {
+        return new ArrayList<>(Arrays.asList(vector.a.getLat(), vector.a.getLng(), vector.b.getLat(), vector.b.getLng()));
+    }
+
+    public List<CounterResult> getMap() {
+        return this.merge();
     }
 }

@@ -1,51 +1,68 @@
 package com.kamennova.doggies.route;
 
+import com.kamennova.doggies.route.geom.BaseCoordinate;
+import com.kamennova.doggies.route.geom.DoubleCoordinate;
+import com.kamennova.doggies.route.geom.IntCoordinate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CoordinatesCoder {
-    public static List<Coordinate> decode(String compressed, Coordinate start) {
-        List<Integer> dist = Arrays.stream(compressed.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+    public static List<IntCoordinate> decode(String compressed, DoubleCoordinate start) {
+        final List<IntCoordinate> diffs = stringToCoords(compressed);
+        final ArrayList<IntCoordinate> output = new ArrayList<>();
 
-        List<Coordinate> coords = new ArrayList<>();
-        coords.add(start);
+        final BaseCoordinate<Integer> a = start.apply(CoordinatesCoder::getMinAndSec);
+        output.add(new IntCoordinate(a.getLat(), a.getLng()));
 
-        for (int i = 0; i < dist.size() / 2; i++) {
-            final Coordinate prev = coords.get(coords.size() - 1);
-            final BaseCoordinate<Double> diff = new BaseCoordinate<Integer>(dist.get(i * 2), dist.get(i * 2 + 1)).apply(CoordinatesCoder::getFullFromMinAndSec);
-            final Coordinate coord = new Coordinate(prev.getLat() + diff.getLat(), prev.getLng() + diff.getLng());
-            coords.add(coord);
-        }
+        diffs.forEach(diff -> {
+            final IntCoordinate prev = output.get(output.size() - 1);
+            final IntCoordinate coord = new IntCoordinate(prev.getLat() + diff.getLat(), prev.getLng() + diff.getLng());
+            output.add(coord);
+        });
 
-        return coords;
+        return output;
     }
 
-    private static Double getFullFromMinAndSec(Integer minAndSec) {
-//        return minAndSec * Math.pow(0.1, 6 + minAndSec.toString().length());
+    public static Double getFullFromMinAndSec(Integer minAndSec) {
+        // return minAndSec * Math.pow(0.1, 6 + minAndSec.toString().length());
         return Double.parseDouble((minAndSec < 0 ? "-" : "") + "0." + "0".repeat(6 - String.valueOf(Math.abs(minAndSec)).length()) + Math.abs(minAndSec));
     }
 
-    private static Integer getMinAndSec(Double point) {
+    public static Integer getMinAndSec(Double point) {
         return (int) Math.round((point - Math.floor(point)) * 1000000);
     }
 
-    public static String encode(List<Coordinate> input) {
-        final ArrayList<Integer> output = new ArrayList<>();
-
+    public static String encode(List<DoubleCoordinate> input) {
+        final ArrayList<IntCoordinate> output = new ArrayList<>();
         BaseCoordinate<Integer> prevReduced = input.get(0).apply(CoordinatesCoder::getMinAndSec);
 
         for (int i = 1; i < input.size(); i++) {
-            final Coordinate coordFull = input.get(i);
+            final DoubleCoordinate coordFull = input.get(i);
             final BaseCoordinate<Integer> coordReduced = coordFull.apply(CoordinatesCoder::getMinAndSec);
+            final IntCoordinate diff = new IntCoordinate(coordReduced.getLat() - prevReduced.getLat(), coordReduced.getLng() - prevReduced.getLng());
 
-            output.add(coordReduced.getLat() - prevReduced.getLat());
-            output.add(coordReduced.getLng() - prevReduced.getLng());
+            if (diff.getLat() == 0 && diff.getLng() == 0) { // todo why?
+                continue;
+            }
 
+            output.add(diff);
             prevReduced = coordReduced;
         }
 
-        return output.stream().map(Object::toString).collect(Collectors.joining(","));
+        return coordsToString(output);
+    }
+
+    private static String coordsToString(List<IntCoordinate> coords) {
+        return coords.stream().map(c -> c.getLat() + "," + c.getLng()).collect(Collectors.joining(";"));
+    }
+
+    private static List<IntCoordinate> stringToCoords(String str) {
+        return Arrays.stream(str.split(";")).map(coordStr -> {
+            final String[] numStr = coordStr.split(",");
+            return new IntCoordinate(Integer.parseInt(numStr[0]), Integer.parseInt(numStr[1]));
+        }).collect(Collectors.toList());
     }
 }

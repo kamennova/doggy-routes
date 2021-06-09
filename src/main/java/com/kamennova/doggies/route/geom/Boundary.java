@@ -1,4 +1,4 @@
-package com.kamennova.doggies.route;
+package com.kamennova.doggies.route.geom;
 
 public class Boundary {
     double left;
