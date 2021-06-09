@@ -31,11 +31,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/signIn")
                 .and()
                 .logout()
+                .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/signIn*", "/signUp*", "/img/**", "/js/**", "/css/**").permitAll()
+                .antMatchers("/api*", "/my-routes*", "/my-dogs*").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/routes").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
     }
 }

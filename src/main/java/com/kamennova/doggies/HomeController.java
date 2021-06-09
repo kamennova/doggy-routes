@@ -27,7 +27,8 @@ public class HomeController {
     public RouteService routeService;
 
     @GetMapping(value = {"/", "/index"})
-    public String index(Model model) {
+    public String index(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("isSignedIn", user != null);
         return "index";
     }
 

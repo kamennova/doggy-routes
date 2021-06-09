@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Помилка')"></head>
+
+<body>
+<main class="page-content">
+    <div class="form-container">
+        <div th:replace="fragments/logoBig :: logo"></div>
+        <h2 class="page-title" th:text="${code}"></h2>
+        <p th:if="${code} != 404">На жаль, сталася помилка</p>
+        <p th:if="${code} == 404">Сторінку не знайдено</p>
+        <a href="/">На головну</a>
+    </div>
+</main>
+</body>
+</html>
