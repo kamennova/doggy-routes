@@ -1,12 +1,12 @@
 package com.kamennova.doggies.dog;
 
+import com.kamennova.doggies.dog.response.DogOverview;
 import com.kamennova.doggies.route.RouteRepository;
 import com.kamennova.doggies.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,19 +22,13 @@ public class DogService {
     @Autowired
     RouteRepository routeRepository;
 
-    public List<HashMap<String, Object>> getDogsInfoOfOwner(Long ownerId) {
-        return repository.findByOwnerId(ownerId).stream().map(dog -> {
-            final HashMap<String, Object> obj = new HashMap<>();
-            obj.put("name", dog.getName());
-            obj.put("breedName", dog.getBreed().getName());
-            obj.put("breedPic", dog.getBreed().getImageSrc());
-            obj.put("sex", dog.getSex().toString());
-            obj.put("age", dog.getFullYears());
-            obj.put("id", dog.getId());
-
-            return obj;
-        }).collect(Collectors.toList());
+    public List<DogOverview> getDogsInfoOfOwner(Long ownerId) {
+        return repository.findByOwnerId(ownerId).stream().map(Dog::getFullOverview).collect(Collectors.toList());
     }
+
+    /* public List<Dog> getDogsInfoOfOwner(Long ownerId) {
+        return repository.findByOwnerId(ownerId);
+    } */
 
     public List<DogBreed> getBreedsInfo() {
         return breedRepository.findAllByOrderByNameAsc();

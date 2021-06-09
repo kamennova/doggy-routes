@@ -1,14 +1,17 @@
 package com.kamennova.doggies.dog;
 
+import com.kamennova.doggies.dog.response.DogOverview;
+import com.kamennova.doggies.dog.response.DogOverviewFull;
 import com.kamennova.doggies.user.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.Year;
 import java.util.Objects;
 
 @Entity
 @Table(name = "dog")
-public class Dog {
+public class Dog implements Serializable {
     public static enum Sex {
         Male,
         Female
@@ -94,6 +97,14 @@ public class Dog {
 
     public void setYearBorn(int year) {
         this.yearBorn = year;
+    }
+
+    public DogOverview getOverview() {
+        return new DogOverview(breed, getFullYears(), sex);
+    }
+
+    public DogOverviewFull getFullOverview() {
+        return new DogOverviewFull(breed, getFullYears(), sex, name, id);
     }
 
     @Override

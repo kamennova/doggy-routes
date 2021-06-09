@@ -1,10 +1,13 @@
 package com.kamennova.doggies.dog;
 
+import com.kamennova.doggies.dog.response.BreedOverview;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "dog_breed")
-public class DogBreed {
+public class DogBreed implements Serializable {
 
     DogBreed() {
     }
@@ -38,5 +41,9 @@ public class DogBreed {
 
     public Short getId(){
         return this.id;
+    }
+
+    public BreedOverview getOverview(){
+        return new BreedOverview(name, imageSrc);
     }
 }

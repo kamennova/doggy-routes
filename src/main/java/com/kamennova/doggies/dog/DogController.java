@@ -31,8 +31,8 @@ public class DogController {
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public HashMap<String, String> addDog(@RequestBody Map<String, Object> dog, @AuthenticationPrincipal User user) {
-        final HashMap<String, String> res = new HashMap<>();
+    public HashMap<String, Object> addDog(@RequestBody Map<String, Object> dog, @AuthenticationPrincipal User user) {
+        final HashMap<String, Object> res = new HashMap<>();
 
         final String name = dog.get("name").toString();
         final Dog.Sex sex = dog.get("sex").toString().equals("female") ? Dog.Sex.Female : Dog.Sex.Male;
@@ -49,7 +49,7 @@ public class DogController {
 
         final Dog newDog = dogService.save(name, breed.get(), yearBorn, sex, user);
         res.put("status", "ok");
-        res.put("id", newDog.getId().toString());
+        res.put("id", newDog.getId());
 
         return res;
     }

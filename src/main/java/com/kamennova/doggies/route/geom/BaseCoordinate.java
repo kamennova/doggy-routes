@@ -1,5 +1,6 @@
 package com.kamennova.doggies.route;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 public class BaseCoordinate<T extends Number> {
@@ -34,8 +35,18 @@ public class BaseCoordinate<T extends Number> {
     public <G extends Number> BaseCoordinate<G> apply(Function<T, G> func){
         return new BaseCoordinate<G>(func.apply(getLat()), func.apply(getLng()));
     }
-}
 
-interface CoordinateFunc<G extends Number, T extends Number> {
-    BaseCoordinate<G> doSomething(T param);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseCoordinate<?> that = (BaseCoordinate<?>) o;
+        return Objects.equals(lat, that.lat) &&
+                Objects.equals(lng, that.lng);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat, lng);
+    }
 }
