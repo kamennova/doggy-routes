@@ -3,7 +3,7 @@
 <head th:replace="fragments/mapHead :: head('Мої маршрути')"></head>
 <body>
 
-<nav th:replace="fragments/menu :: menu"></nav>
+<nav th:replace="fragments/menu :: menu(isSignedIn = true)"></nav>
 
 <main>
     <div id="map" class="map"></div>
@@ -18,10 +18,11 @@
             </div>
         </div>
 
+        <p id="route-error" class="form-error"></p>
+
         <div class="row btn-row">
             <button class="btn btn-smaller route-form-save-btn" id="route-form-cancel-btn">Скасувати</button>
             <button class="btn btn-smaller route-form-save-btn" id="route-form-save-btn">Зберегти</button>
-            <!--<button class="btn btn-smaller route-form-save-btn" id="route-form-delete-btn">Видалити</button>-->
         </div>
     </article>
 
@@ -66,7 +67,11 @@
     </article>
 </main>
 <script th:inline="javascript">
+    const colors = ["#fff", "#000", "#eee", "green", "yellow", "pink"];
     const myRoutes = [[${routes}]];
+    myRoutes.forEach((route, index) => {
+        myRoutes[index].color = colors[index%(colors.length - 1)];
+    });
 </script>
 <script type="text/javascript" src="js/mapInit.js"></script>
 <script type="text/javascript" src="js/myRouteUI.js"></script>

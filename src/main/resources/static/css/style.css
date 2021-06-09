@@ -91,14 +91,12 @@ main {
     top: 0;
     margin: 20px 0 20px 20px;
     width: 76px;
-    height: 410px;
     border-left: none;
     background-color: var(--primary-light);
     background-image: linear-gradient(119deg, var(--primary-light), #410808);
     z-index: 200;
     padding: 20px 9px;
     border-radius: 12px;
-    bottom: 20px;
     box-shadow: 0 0 11px -2px rgba(0, 0, 0, 0.3);
 }
 
@@ -123,7 +121,7 @@ main {
     text-align: center;
 }
 
-.menu-links li {
+.menu-links li:not(:last-of-type) {
     margin-bottom: 26px;
 }
 

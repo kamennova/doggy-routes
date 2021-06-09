@@ -4,7 +4,7 @@
 
 <body>
 
-<div th:replace="fragments/menu :: menu"></div>
+<div th:replace="fragments/menu :: menu(isSignedIn = ${isSignedIn})"></div>
 
 <main>
     <div id="map" class="map"></div>

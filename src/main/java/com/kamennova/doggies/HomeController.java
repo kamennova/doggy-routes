@@ -51,7 +51,8 @@ public class HomeController {
     }
 
     @GetMapping("/about")
-    public String about() {
+    public String about(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("isSignedIn", user != null);
         return "about";
     }
 

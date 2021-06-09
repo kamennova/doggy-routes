@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head('Мої собаки')"></div>
 <body>
-<div th:replace="fragments/menu :: menu"></div>
+<div th:replace="fragments/menu :: menu(isSignedIn = true)"></div>
 
 <main class="page-content">
 
