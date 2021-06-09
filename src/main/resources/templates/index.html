@@ -6,8 +6,9 @@
 
 <div th:replace="fragments/menu :: menu(isSignedIn = ${isSignedIn})"></div>
 
-<main>
+<main id="map-page">
     <div id="map" class="map"></div>
+    <div id="alerts-container" class="alerts-container"></div>
 </main>
 <script type="text/javascript" src="/js/mapInit.js"></script>
 <script type="text/javascript" src="/js/index.js"></script>

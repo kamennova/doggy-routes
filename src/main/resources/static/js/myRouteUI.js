@@ -2,7 +2,6 @@ const RouteStops = [];
 const StopConnections = [];
 
 const createLineFromCoordinates = (coordinates) => {
-    console.log(coordinates);
     const line = new ol.geom.LineString(coordinates).transform('EPSG:4326', 'EPSG:3857');
     const feature = new ol.Feature({geometry: line});
     vectorSource.addFeature(feature);
@@ -39,7 +38,7 @@ const saveNewRoute = () => {
             coordinates: StopConnections.map(
                 feature => feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326').getCoordinates())
                 .flat()
-                .map(c => [c[1], c[0]])
+                .map(c => [ c[ 1 ], c[ 0 ] ])
                 .flat()
         }),
     }).then(res => res.json());
@@ -71,12 +70,14 @@ map.on('click', (event) => {
 // === Init UI ===
 
 const FormModes = {Create: "create", Edit: "edit"};
-const FORM_MODE = FormModes.Create;
+let FORM_MODE = FormModes.Create;
 
 const AnimationDuration = 200;
 const routeForm = document.getElementById("route-form");
 const routesCol = document.getElementById("routes-sidebar");
 
+const hide = (elem) => elem.classList.add("hidden");
+const show = (elem) => elem.classList.remove("hidden");
 const closeRouteForm = () => routeForm.classList.add("closed");
 const showRouteForm = () => routeForm.classList.remove("closed");
 const showRoutesCol = () => routesCol.classList.remove("closed");
@@ -84,16 +85,22 @@ const closeRoutesCol = () => routesCol.classList.add("closed");
 
 // on route form open
 document.getElementById("btn-add-route").addEventListener("click", () => {
-    closeRoutesCol();
+    openRouteForm(document.getElementsByClassName("route-item").length + 1);
+});
 
-    const routesNum = document.getElementsByClassName("route-item").length;
-    if (routesNum > 0) {
-        document.getElementById("new-route-index").innerText = routesNum + 1;
+const openRouteForm = (routeIndex) => {
+    closeRoutesCol();
+    document.getElementById("new-route-index").innerText = routeIndex;
+
+    if (FORM_MODE !== FormModes.Create) {
+        hide(document.getElementById('new-route-label'));
+    } else {
+        show(document.getElementById('new-route-label'))
     }
 
     setTimeout(showRouteForm, AnimationDuration);
     setTimeout(clearMap, AnimationDuration * 2);
-});
+};
 
 // on route form close
 document.getElementById("route-form-cancel-btn").addEventListener("click", () => {
@@ -103,34 +110,48 @@ document.getElementById("route-form-cancel-btn").addEventListener("click", () =>
         clearMap();
         drawAllRoutes();
     }, AnimationDuration * 2);
-
 });
 
-// assign colors to routes
+const drawRoute = (route) => {
+    const coords = route.coords;
+    const line = new ol.geom.LineString(coords).transform('EPSG:4326', 'EPSG:3857');
+    const feature = new ol.Feature({geometry: line, color: route.color});
+    vectorSource.addFeature(feature);
 
-const colors = ["black", "blue", "brown", "green", "yellow", "pink"];
-
-myRoutes.forEach((route, index) => {
-    myRoutes[i].color = colors[index%(colors.length - 1)];
-});
+    return feature;
+};
 
 const drawAllRoutes = () => {
-    myRoutes.forEach(route => {
-        const coords = route.coords;
-        const line = new ol.geom.LineString(coords).transform('EPSG:4326', 'EPSG:3857');
-        const feature = new ol.Feature({geometry: line, color: route.color});
-        console.log(route.color);
-        vectorSource.addFeature(feature);
+    if (myRoutes.length === 0) {
+        return;
+    }
 
-        return feature;
-    });
+    MapView.animate({center: ol.proj.fromLonLat(myRoutes[ 0 ].coords[ 0 ]), duration: 600,});
+    myRoutes.forEach(drawRoute);
 };
 
 drawAllRoutes();
 
+const displayError = (error) => {
+    document.getElementById("route-error").innerText = error;
+};
+
 document.getElementById("route-form-save-btn").addEventListener("click", () => {
+    if (StopConnections.length < 1) {
+        displayError("Будь ласка, додайте точки маршруту");
+        return;
+    } else {
+        displayError("");
+    }
+
     if (FORM_MODE === FormModes.Create) {
-        saveNewRoute().then(res => console.log(res));
+        saveNewRoute().then(res => {
+            if (res.error) {
+                displayError(res.error);
+            } else {
+                document.location.href = "/my-routes";
+            }
+        });
     } else {
         console.log("save changes");
     }
@@ -171,3 +192,17 @@ document.getElementById("btn-confirm-delete").addEventListener("click", deleteRo
 document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", preDelete);
 });
+
+//=== Edit
+
+const onEdit = (e) => {
+    FORM_MODE = FormModes.Edit;
+    const id = Number(e.path[ 3 ].dataset.id);
+    const index = myRoutes.findIndex(elem => elem.id === id);
+
+    openRouteForm(index + 1);
+    clearMap();
+    drawRoute(myRoutes[ index ]);
+};
+
+document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', onEdit));
