@@ -42,12 +42,6 @@ const vectorLayer = new ol.layer.Vector({
 
 });
 
-/*map.on('pointermove', function (e) {
-    if (e.dragging) return;
-    const hit = map.hasFeatureAtPixel(map.getEventPixel(e.originalEvent));
-    map.getTargetElement().style.cursor = hit ? 'pointer' : '';
-}); */
-
 map.addLayer(vectorLayer);
 
 const clearMap = () => vectorSource.clear();

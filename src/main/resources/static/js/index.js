@@ -23,9 +23,9 @@ const drawPoint = (point, id) => {
 
 const update = () => {
     const point = new ol.geom.Point(MapView.getCenter()).transform('EPSG:3857', 'EPSG:4326').getCoordinates();
-    const zoom = MapView.getZoom() - 10;
+    const zoom = MapView.getZoom();
 
-    if (zoom < 4.5) {
+    if (zoom < ReqZoom) {
         getRoutesOverview().then(res => {
             clearMap();
             res.overview.forEach(drawPoint);
@@ -35,7 +35,6 @@ const update = () => {
             Dogs = res.dogs;
             clearMap();
             res.lines.forEach(drawLine);
-
         });
     }
 };
@@ -55,8 +54,8 @@ const addAlert = (text) => {
 
 let OldZoom = MapView.getZoom();
 let OldCenter = MapView.getCenter();
-const ReqZoom = 14.5;
-const ZoomInAlert = "Зменшіть масштаб, щоб побачити маршрути";
+const ReqZoom = 14;
+const ZoomInAlert = "Наблизьте, щоб побачити маршрути";
 
 map.on('movestart', () => OldZoom = MapView.getZoom());
 
@@ -100,8 +99,6 @@ const displayDogs = (dogs, pixel) => {
         dogPopup.removeChild(dogPopup.firstChild);
     }
 
-    console.log(pixel);
-
     dogs.forEach(dog => {
         const div = document.createElement('div');
         const img = document.createElement('img');
@@ -127,26 +124,52 @@ const displayDogs = (dogs, pixel) => {
         dogPopup.appendChild(div);
     });
 
-    dogPopup.style.left = pixel[ 0 ] - dogPopup.offsetWidth / 2 + 'px';
-    dogPopup.style.top = pixel[ 1 ] - dogPopup.offsetHeight + 'px';
+    dogPopup.style.opacity = '0';
     show(dogPopup);
+    dogPopup.style.left = (pixel[ 0 ] - dogPopup.offsetWidth / 2) + 'px';
+    dogPopup.style.top = (pixel[ 1 ] - dogPopup.offsetHeight) + 'px';
+    dogPopup.style.opacity = '1';
 };
 
 let selected = null;
 
-const highlightStyle = new ol.style.Style({
-    fill: new ol.style.Fill({
-        color: 'rgba(255,255,255,0.7)',
+const highlightStyle = [
+    new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: 'rgba(255,255,255,0.7)',
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'rgba(255,255,255,0.7)',
+            width: 3,
+        }),
     }),
-    stroke: new ol.style.Stroke({
-        color: '#3399CC',
-        width: 3,
+    new ol.style.Style({
+        image: new ol.style.Circle({
+            radius: 7,
+            fill: new ol.style.Fill({color: 'red'}),
+            stroke: new ol.style.Stroke({
+                color: 'white',
+                width: 2,
+            }),
+        }),
     }),
-});
+];
 
-const routeOnHover = (f) => {
+const routeOnHover = (f, pixel) => {
+    if (selected) {
+        if (selected.get('id') === f.get('id')) {
+            return;
+        }
+
+        selected.setStyle(undefined);
+    }
+
     selected = f;
     f.setStyle(highlightStyle);
+
+    const dogs = f.get('type') === 'point' ? f.get('dogs') : getDogsByIds(f.get('dogIds'));
+    displayDogs(dogs, pixel);
+
     return true;
 };
 
@@ -155,18 +178,11 @@ map.on('pointermove', (e) => {
     const hit = map.hasFeatureAtPixel(pixel);
     map.getViewport().style.cursor = hit ? 'pointer' : '';
 
-    if (selected !== null) {
+    if (hit) {
+        map.forEachFeatureAtPixel(e.pixel, f => routeOnHover(f, e.pixel));
+    } else if (selected) {
         selected.setStyle(undefined);
         selected = null;
-    }
-
-    map.forEachFeatureAtPixel(e.pixel, routeOnHover);
-
-    if (selected) {
-        const dogs = selected.get('type') === 'point' ? selected.get('dogs') :
-            getDogsByIds(selected.get('dogIds'));
-        displayDogs(dogs, e.pixel);
-    } else {
         hidePopup();
     }
 });
