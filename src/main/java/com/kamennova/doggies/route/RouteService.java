@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,11 +29,13 @@ public class RouteService {
     public static final Boundary Kyiv = new Boundary(30.175930, 50.588778, 30.865690, 50.280173);
 
     public List<RouteOverview> getRoutesInfoOfUser(Long userId) {
-        return userRepository.getOne(userId).getRoutes().stream().map(route -> new RouteOverview(
-                route.getId(),
-                route.getLength(),
-                transformCoordinates(route.getFullCoordinates()))
-        ).collect(Collectors.toList());
+        return userRepository.getOne(userId).getRoutes().stream()
+                .map(route -> new RouteOverview(
+                        route.getId(),
+                        route.getLength(),
+                        transformCoordinates(route.getFullCoordinates())))
+                .sorted(Comparator.comparing(o -> o.id))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -50,11 +53,11 @@ public class RouteService {
      * Fetches routes in set radius of coordinate & merges dogs info on each route vector
      */
     public List<RouteMap> getRouteMaps(List<Route> routes) {
-        final RouteCounter routeCounter = new RouteCounter(routes);
+        final RouteAggregator aggregator = new RouteAggregator(routes);
 
-        return routeCounter.getMap().stream().map(obj -> new RouteMap(
+        return aggregator.getMap().stream().map(obj -> new RouteMap(
                 obj.users.stream().flatMap(u -> u.getDogs().stream().map(Dog::getId)).collect(Collectors.toSet()),
-                obj.routes.stream().map(this::transformCoordinates).collect(Collectors.toList()))
+                obj.routes.stream().map(r -> transformCoordinates(r.get())).collect(Collectors.toList())) // todo?
         ).collect(Collectors.toList());
     }
 
@@ -104,7 +107,7 @@ public class RouteService {
         }
 
         System.out.println(length);
-        return (int) (length * 70 * 1000);
+        return (int) (length * 70 * 100);
     }
 
     public static boolean isInKyiv(DoubleCoordinate coordinate) {

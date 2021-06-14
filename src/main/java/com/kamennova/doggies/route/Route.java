@@ -3,9 +3,11 @@ package com.kamennova.doggies.route;
 import com.kamennova.doggies.route.geom.BaseCoordinate;
 import com.kamennova.doggies.route.geom.DoubleCoordinate;
 import com.kamennova.doggies.route.geom.IntCoordinate;
+import com.kamennova.doggies.route.geom.Vector;
 import com.kamennova.doggies.user.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,12 +29,12 @@ public class Route {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @OneToOne
-    @JoinColumn(name="start_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "start_id", referencedColumnName = "id", nullable = false)
     private Coordinate start;
 
-    @OneToOne
-    @JoinColumn(name="median_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "median_id", referencedColumnName = "id", nullable = false)
     private Coordinate median;
 
     @Column(name = "coordinates")
@@ -46,10 +48,14 @@ public class Route {
         this.user = user;
         this.isActive = true;
         this.length = length;
-        final DoubleCoordinate start = coords.get(0);
-        this.start = new Coordinate(start.getLat(), start.getLng());
         this.compressedCoordinates = CoordinatesCoder.encode(coords);
         this.userId = user.getId();
+
+        final DoubleCoordinate start = coords.get(0);
+        this.start = new Coordinate(start.getLat(), start.getLng());
+
+        final DoubleCoordinate median = coords.get(coords.size() / 2);
+        this.median = new Coordinate(median.getLat(), median.getLng());
     }
 
     public Long getId() {
@@ -97,7 +103,7 @@ public class Route {
         return new DoubleCoordinate(start.getLat(), start.getLng());
     }
 
-    public DoubleCoordinate getMedian(){
+    public DoubleCoordinate getMedian() {
         return new DoubleCoordinate(median.getLat(), median.getLng());
     }
 
@@ -122,6 +128,22 @@ public class Route {
         this.median = c;
     }
 
+    // todo move to coordinates?
+    public List<Vector> getVectors() {
+        final List<DoubleCoordinate> coordinates = getFullCoordinates();
+        final List<Vector> vectors = new ArrayList<>();
+
+        DoubleCoordinate prev = coordinates.get(0);
+
+        for (int i = 1; i < coordinates.size(); i++) {
+            final DoubleCoordinate curr = coordinates.get(i);
+            vectors.add(new Vector(prev, curr));
+            prev = curr;
+        }
+
+        return vectors;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -139,6 +161,6 @@ public class Route {
 
     @Override
     public String toString() {
-        return "Route{" + "id=" + this.id + ", polyline='" + this.start + "'}";
+        return "Route{" + "id=" + this.id + ", start='" + this.start + "'}";
     }
 }

@@ -1,5 +1,7 @@
 package com.kamennova.doggies.route.geom;
 
+import com.kamennova.doggies.route.Coordinates;
+
 import java.util.*;
 
 public class Vector {
@@ -41,6 +43,11 @@ public class Vector {
         return "[" + a.toString() + ", " + b.toString() + "]";
     }
 
+    /**
+     *  If vectors are adjacent, returns coinciding
+     *  coordinate names (a or b) - first one of this vector, second of param vector.
+     *  If not adjacent, returns empty list.
+     */
     public List<Character> getAdjacency(Vector vector) {
         if (a.equals(vector.a)) {
             return List.of('a', 'a');
@@ -63,7 +70,12 @@ public class Vector {
         return new Vector(b, a);
     }
 
-    public ArrayList<DoubleCoordinate> toCoordinates() {
-        return new ArrayList<>(Arrays.asList(a, b));
+    public Coordinates toCoordinates() {
+        return new Coordinates(new ArrayList<>(Arrays.asList(a, b)));
+    }
+
+    public Vector alignToEastNorth() {
+        return a.getLng() < b.getLng() ||
+                a.getLng().equals(b.getLng()) && a.getLat() < b.getLat() ? new Vector(a, b) : new Vector(b, a);
     }
 }
