@@ -1,5 +1,6 @@
 const close = (elem) => elem.classList.add("hidden");
 const open = (elem) => elem.classList.remove("hidden");
+const deleteModal = document.getElementById("delete-dog-modal");
 
 document.querySelectorAll(".close-btn")
     .forEach(elem => elem.addEventListener("click", (evt) => close(evt.path[ 1 ])));
@@ -7,12 +8,11 @@ document.querySelectorAll(".close-btn")
 document.getElementById("btn-add-dog").addEventListener("click", () => open(document.getElementById("add-dog-modal")));
 
 document.getElementById("btn-delete-dog").addEventListener("click", () => {
-    deleteDogReq(DeleteDogId).then(res => {
-        if (res.status < 400) {
-            DeleteDogId = undefined;
-        }
-        close(document.getElementById("delete-dog-modal"));
-    })
+    deleteDogReq(DeleteDogId).then(() => {
+        DeleteDogId = undefined;
+        close(deleteModal);
+        document.location.href = "/my-dogs";
+    });
 });
 
 const dogCreateReq = (params) => {
@@ -38,12 +38,11 @@ const getFormData = () => {
 };
 
 const validateForm = (data) => {
-    return false;
     if (data.name.length === 0) {
         return "Будь ласка, введіть імʼя собаки";
-    } else if (data.breed == null) {
+    } else if (data.breedId == null) {
         return "Будь ласка, оберіть породу собаки";
-    } else if (data.yearBorn === "") {
+    } else if (data.yearBorn === 0) {
         return "Будь ласка, оберіть приблизну дату народження собаки";
     }
 
@@ -58,7 +57,7 @@ document.getElementById("btn-save-dog").addEventListener("click", () => {
     const data = getFormData();
     const error = validateForm(data);
 
-    if (!error) {
+    if (error == null) {
         document.getElementById("add-dog-modal").classList.add("hidden");
         setError("");
         dogForm.reset();
@@ -77,14 +76,14 @@ document.getElementById("btn-save-dog").addEventListener("click", () => {
 let DeleteDogId;
 
 const deleteDog = (e) => {
-    DeleteDogId = Number(e.path[0].dataset.id);
-    document.getElementById("delete-dog-modal").classList.remove("hidden");
-}
+    DeleteDogId = Number(e.path[ 0 ].dataset.id);
+    open(deleteModal);
+};
 
 document.querySelectorAll(".delete-dog-btn").forEach((btn) => btn.addEventListener("click", deleteDog));
 
 const deleteDogReq = (id) => {
     return fetch(`${API_URL_BASE}/dogs/${id}`, {
         method: "DELETE",
-    }).then(res => res.json());
+    });
 };

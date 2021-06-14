@@ -1,6 +1,7 @@
 package com.kamennova.doggies.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +23,18 @@ class UserController {
 
     @PostMapping("")
     @ResponseBody
-    HashMap<String, String> newUser(@RequestBody Map<String, String> user) {
-        HashMap<String, String> res = new HashMap<>();
-        final String email = user.get("email");
-        final String password = user.get("password");
-        final String error = service.validate(email, password);
+    ResponseEntity<Map<String, String>> create(@RequestBody NewUserReq user) {
+        Map<String, String> res = new HashMap<>();
+        final String error = service.validate(user.email, user.password);
 
-        if (!error.isBlank()) {
+        if (!error.isEmpty()) {
             res.put("error", error);
-        } else {
-            final User newUser = new User(email, passwordEncoder.encode(password));
-            repository.save(newUser);
-            res.put("status", "ok");
+            return ResponseEntity.badRequest().body(res);
         }
 
-        return res;
+        repository.save(new User(user.email, passwordEncoder.encode(user.password)));
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")

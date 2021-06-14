@@ -113,7 +113,7 @@ document.getElementById("route-form-cancel-btn").addEventListener("click", () =>
 });
 
 const drawRoute = (route) => {
-    const coords = route.coords;
+    const coords = route.coordinates;
     const line = new ol.geom.LineString(coords).transform('EPSG:4326', 'EPSG:3857');
     const feature = new ol.Feature({geometry: line, color: route.color});
     vectorSource.addFeature(feature);
@@ -126,7 +126,7 @@ const drawAllRoutes = () => {
         return;
     }
 
-    MapView.animate({center: ol.proj.fromLonLat(myRoutes[ 0 ].coords[ 0 ]), duration: 600,});
+    MapView.animate({center: ol.proj.fromLonLat(myRoutes[ 0 ].coordinates[ 0 ]), duration: 600,});
     myRoutes.forEach(drawRoute);
 };
 
@@ -178,12 +178,10 @@ const preDelete = (e) => {
 
 const deleteRouteReq = (id) => fetch(`${API_URL_BASE}/routes/${id}`, {
     method: "DELETE",
-}).then(res => res.json());
+});
 
-const deleteRoute = () => deleteRouteReq(DeleteRouteId).then(res => {
-    if (!res.error) {
-        DeleteRouteId = null;
-    }
+const deleteRoute = () => deleteRouteReq(DeleteRouteId).then(() => {
+    DeleteRouteId = null;
     close(deleteModal);
 });
 

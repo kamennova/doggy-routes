@@ -1,6 +1,5 @@
 package com.kamennova.doggies;
 
-import com.kamennova.doggies.dog.DogRepository;
 import com.kamennova.doggies.dog.DogService;
 import com.kamennova.doggies.route.RouteService;
 import com.kamennova.doggies.user.User;
@@ -19,9 +18,6 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
     @Autowired
     public DogService dogService;
-
-    @Autowired
-    public DogRepository dogRepository;
 
     @Autowired
     public RouteService routeService;
@@ -45,7 +41,6 @@ public class HomeController {
     public String myRoutes(Model model, @AuthenticationPrincipal User principal) {
         model.addAttribute("userEmail", principal.getEmail());
         model.addAttribute("routes", routeService.getRoutesInfoOfUser(principal.getId()));
-        model.addAttribute("areActive", dogRepository.userHasDogs(principal.getId()));
 
         return "routes";
     }

@@ -1,6 +1,7 @@
 package com.kamennova.doggies.user;
 
 import com.kamennova.doggies.dog.Dog;
+import com.kamennova.doggies.route.Route;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -24,6 +25,10 @@ public class User {
     @OneToMany(targetEntity = Dog.class, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "owner_id")
     private Set<Dog> dogs;
+
+    @OneToMany(targetEntity = Route.class, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id")
+    private Set<Route> routes;
 
     User() {
     }
@@ -65,6 +70,10 @@ public class User {
 
     public void setDogs(Set<Dog> dogs) {
         this.dogs = dogs;
+    }
+
+    public Collection<Route> getRoutes() {
+        return this.routes;
     }
 
     public Collection<Dog> getDogs() {

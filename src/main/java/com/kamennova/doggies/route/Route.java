@@ -42,9 +42,9 @@ public class Route {
 
     private Integer length;
 
-    Route(List<DoubleCoordinate> coords, User user, boolean isActive, Integer length) {
+    Route(List<DoubleCoordinate> coords, User user, Integer length) {
         this.user = user;
-        this.isActive = isActive;
+        this.isActive = true;
         this.length = length;
         final DoubleCoordinate start = coords.get(0);
         this.start = new Coordinate(start.getLat(), start.getLng());

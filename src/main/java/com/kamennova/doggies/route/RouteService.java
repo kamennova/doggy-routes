@@ -8,6 +8,7 @@ import com.kamennova.doggies.route.response.PublicRouteOverview;
 import com.kamennova.doggies.route.response.RouteMap;
 import com.kamennova.doggies.route.response.RouteOverview;
 import com.kamennova.doggies.user.User;
+import com.kamennova.doggies.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,13 @@ public class RouteService {
     @Autowired
     RouteRepository repository;
 
+    @Autowired
+    UserRepository userRepository;
+
     public static final Boundary Kyiv = new Boundary(30.175930, 50.588778, 30.865690, 50.280173);
 
     public List<RouteOverview> getRoutesInfoOfUser(Long userId) {
-        return repository.findByUserId(userId).stream().map(route -> new RouteOverview(
+        return userRepository.getOne(userId).getRoutes().stream().map(route -> new RouteOverview(
                 route.getId(),
                 route.getLength(),
                 transformCoordinates(route.getFullCoordinates()))

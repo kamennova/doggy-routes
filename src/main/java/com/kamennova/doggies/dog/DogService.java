@@ -26,10 +26,6 @@ public class DogService {
         return repository.findByOwnerId(ownerId).stream().map(Dog::getFullOverview).collect(Collectors.toList());
     }
 
-    /* public List<Dog> getDogsInfoOfOwner(Long ownerId) {
-        return repository.findByOwnerId(ownerId);
-    } */
-
     public List<DogBreed> getBreedsInfo() {
         return breedRepository.findAllByOrderByNameAsc();
     }
@@ -51,6 +47,8 @@ public class DogService {
             return "Введіть коректний рік народження";
         } else if (breed.isEmpty()) {
             return "Введіть коректну породу собаки";
+        } else if (repository.findByName(name).isPresent()){
+            return "Собака з таким імʼям вже створена";
         }
 
         return "";

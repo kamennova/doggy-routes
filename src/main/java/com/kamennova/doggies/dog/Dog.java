@@ -1,5 +1,6 @@
 package com.kamennova.doggies.dog;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.kamennova.doggies.dog.response.DogOverview;
 import com.kamennova.doggies.dog.response.DogOverviewFull;
 import com.kamennova.doggies.user.User;
@@ -12,12 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "dog")
 public class Dog implements Serializable {
-    public static enum Sex {
-        Male,
-        Female
-    }
-
-    public Dog() {
+     public Dog() {
     }
 
     private @Id
@@ -121,5 +117,26 @@ public class Dog implements Serializable {
     @Override
     public String toString() {
         return "Dog{" + "id=" + this.id + ", description='" + this.name + '}';
+    }
+
+    public static enum Sex {
+        Male("male"),
+        Female("female");
+
+        private final String name;
+
+        Sex(String n) {
+            name = n;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @JsonCreator
+        public static Dog.Sex fromText(String text){
+            return text.toLowerCase().equals("female") ? Sex.Female : Sex.Male;
+        }
     }
 }

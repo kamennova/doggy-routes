@@ -14,8 +14,8 @@
         <article class="block item dog-item" th:if="${dogs}" th:each="dog : ${dogs}">
             <div class="row block-header">
                 <h2 class="title block-title" th:text="${dog.name}"></h2>
-                <img src="img/female.svg" class="icon" th:if="${dog.sex.equals('Female')}"/>
-                <img src="img/male.svg" class="icon" th:if="${dog.sex.equals('Male')}"/>
+                <img src="img/female.svg" class="icon" th:if="${dog.sex.equals('f')}"/>
+                <img src="img/male.svg" class="icon" th:if="${dog.sex.equals('m')}"/>
             </div>
 
             <div class="features row">
@@ -65,7 +65,7 @@
     <article class="block modal add-modal hidden" id="add-dog-modal">
         <button class="close-btn">Закрити</button>
 
-        <form class="dog-form" name="createDog" onsubmit="event.preventDefault()">
+        <form class="dog-form" name="createDog" onsubmit="event.preventDefault(); return false;">
 
             <div class="row columns">
                 <div class="form-control">
@@ -97,7 +97,7 @@
                         Порода
                     </label>
 
-                    <select name="dog-breed" id="dog-breed" >
+                    <select name="dog-breed" id="dog-breed">
                         <option th:each="breed : ${breeds}" th:value="${breed.id}" th:text="${breed.name}"></option>
                     </select>
                 </div>
