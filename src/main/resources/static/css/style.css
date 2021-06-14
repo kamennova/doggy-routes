@@ -12,7 +12,7 @@ body {
     line-height: 1.5;
     --bg-light: #f8f8f8;
     --primary-dark: #a8482b;
-    --primary: #8f5443;
+    --primary: #643110;
     --primary-light: #a0553e;
 }
 
@@ -21,7 +21,7 @@ p {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .visually-hidden {
@@ -102,13 +102,23 @@ main {
 
 .logo {
     text-transform: uppercase;
-    text-align: center;
     display: inline-block;
     text-decoration: none;
     font-weight: bold;
 }
 
+.logo-big span {
+    display: block;
+    color: #7f7f7f;
+    font-size: 12px;
+}
+
+.logo-big svg {
+    display: block;
+}
+
 .main-logo {
+    text-align: center;
     color: white;
     font-size: 11px;
     margin: 0 0 40px;
@@ -151,6 +161,84 @@ main {
 
 .columns > div:last-of-type {
     margin-left: 40px;
+}
+
+/*=== Map */
+
+#dog-popup {
+    position: absolute;
+    left: 400px;
+    top: 200px;
+    padding: 14px 25px;
+    border-radius: 5px;
+    background: var(--bg-light);
+    display: flex;
+    box-shadow: 0 0 11px -2px rgba(0, 0, 0, 0.3);
+    transform-style: preserve-3d;
+    margin-top: -20px;
+    user-select: none;
+}
+
+#dog-popup::before {
+    content: "";
+    transform: translateZ(-1px);
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--bg-light);
+}
+
+#dog-popup > div {
+    position: relative;
+    margin-right: 22px;
+    max-width: 52px;
+}
+
+#dog-popup > div:last-of-type {
+    margin-right: 0;
+}
+
+#dog-popup .sex-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+
+#dog-popup .age {
+    position: absolute;
+    display: block;
+    left: -8px;
+    top: 38px;
+    padding: 2px 4px 1px;
+    background: #e0e0e0;
+    color: black;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1;
+}
+
+#dog-popup .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 12px;
+}
+
+#dog-popup .breed {
+    text-align: left;
+    font-size: 11px;
+    display: block;
+    line-height: 1.2;
 }
 
 /*====*/
@@ -332,7 +420,7 @@ select {
     border: 3px solid grey;
     cursor: pointer;
     height: 34px;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .switcher-btn .icon {
@@ -343,11 +431,11 @@ input[type=radio]:checked + .switcher-btn {
     opacity: 1;
 }
 
-input[type=radio]:checked + .switcher-btn:first-of-type{
+input[type=radio]:checked + .switcher-btn:first-of-type {
     box-shadow: 0 0 12px -2px #ffa6a6;
 }
 
-input[type=radio]:checked + .switcher-btn:last-of-type{
+input[type=radio]:checked + .switcher-btn:last-of-type {
     box-shadow: 0 0 12px -2px #8ad4e4;
 }
 
@@ -376,6 +464,10 @@ input[type=radio]:checked + .switcher-btn:last-of-type{
     margin-top: 0;
 }
 
+.form-tip a {
+    color: black;
+}
+
 /*---*/
 
 .alerts-container {
@@ -395,6 +487,7 @@ input[type=radio]:checked + .switcher-btn:last-of-type{
     border-radius: 4px;
     opacity: 0.8;
     transition: 0.4s linear all;
+    user-select: none;
 }
 
 .alert:hover {

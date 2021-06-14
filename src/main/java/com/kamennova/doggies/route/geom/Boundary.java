@@ -13,7 +13,7 @@ public class Boundary {
         this.bottom = bottom;
     }
 
-    public boolean isInside(DoubleCoordinate coord) {
+    public boolean contains(DoubleCoordinate coord) {
         return bottom <= coord.getLat() &&
                 coord.getLat() <= top &&
                 left <= coord.getLng() &&

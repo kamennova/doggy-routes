@@ -35,10 +35,6 @@ public class Dog implements Serializable {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    Dog(String name) {
-        this.name = name;
-    }
-
     Dog(String name, Sex sex, int yearBorn, DogBreed breed, User owner) {
         this.name = name;
         this.sex = sex;
@@ -100,7 +96,7 @@ public class Dog implements Serializable {
     }
 
     public DogOverview getOverview() {
-        return new DogOverview(breed, getFullYears(), sex);
+        return new DogOverview(breed, getFullYears(), sex, id);
     }
 
     public DogOverviewFull getFullOverview() {
@@ -109,7 +105,6 @@ public class Dog implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o)
             return true;
         if (!(o instanceof Dog))

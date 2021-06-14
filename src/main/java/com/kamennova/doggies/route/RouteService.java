@@ -1,15 +1,19 @@
 package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.dog.Dog;
+import com.kamennova.doggies.dog.response.DogOverview;
 import com.kamennova.doggies.route.geom.Boundary;
 import com.kamennova.doggies.route.geom.DoubleCoordinate;
+import com.kamennova.doggies.route.response.PublicRouteOverview;
+import com.kamennova.doggies.route.response.RouteMap;
 import com.kamennova.doggies.route.response.RouteOverview;
+import com.kamennova.doggies.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,23 +23,20 @@ public class RouteService {
 
     public static final Boundary Kyiv = new Boundary(30.175930, 50.588778, 30.865690, 50.280173);
 
-    public List<HashMap<String, Object>> getRoutesInfoOfUser(Long userId) {
-        return repository.findByUserId(userId).stream().map(route -> {
-            final HashMap<String, Object> obj = new HashMap<>();
-            obj.put("id", route.getId());
-            obj.put("length", route.getLength());
-            obj.put("coords", transformCoordinates(route.getFullCoordinates()));
-
-            return obj;
-        }).collect(Collectors.toList());
+    public List<RouteOverview> getRoutesInfoOfUser(Long userId) {
+        return repository.findByUserId(userId).stream().map(route -> new RouteOverview(
+                route.getId(),
+                route.getLength(),
+                transformCoordinates(route.getFullCoordinates()))
+        ).collect(Collectors.toList());
     }
 
     /**
      * Returns median point coordinates with dogs of all routes.
      */
-    public List<RouteOverview> getRoutesOverview() {
+    public List<PublicRouteOverview> getRoutesOverview() {
         return repository.findAll().stream()
-                .map(route -> new RouteOverview(
+                .map(route -> new PublicRouteOverview(
                         transformCoordinate(route.getMedian()),
                         route.getUser().getDogs().stream().map(Dog::getOverview).collect(Collectors.toList())))
                 .collect(Collectors.toList());
@@ -44,19 +45,22 @@ public class RouteService {
     /**
      * Fetches routes in set radius of coordinate & merges dogs info on each route vector
      */
-    public List<HashMap<String, Object>> findRoutesNear(DoubleCoordinate coord) {
-        final List<Route> routes = findWithFilter(coord);
+    public List<RouteMap> getRouteMaps(List<Route> routes) {
         final RouteCounter routeCounter = new RouteCounter(routes);
 
-        return routeCounter.getMap().stream().map(obj -> {
-            final HashMap<String, Object> res = new HashMap<>();
-            res.put("routes", obj.routes.stream().map(this::transformCoordinates).collect(Collectors.toList()));
-            res.put("userIds", obj.userIds);
-            return res;
-        }).collect(Collectors.toList());
+        return routeCounter.getMap().stream().map(obj -> new RouteMap(
+                obj.users.stream().flatMap(u -> u.getDogs().stream().map(Dog::getId)).collect(Collectors.toSet()),
+                obj.routes.stream().map(this::transformCoordinates).collect(Collectors.toList()))
+        ).collect(Collectors.toList());
     }
 
-    private List<Route> findWithFilter(DoubleCoordinate coord) { // todo
+    public Set<DogOverview> getRoutesDogs(List<Route> routes) {
+        final Set<User> users = routes.stream().map(Route::getUser).collect(Collectors.toSet());
+        return users.stream().flatMap(u -> u.getDogs().stream())
+                .map(Dog::getOverview).collect(Collectors.toSet());
+    }
+
+    public List<Route> findWithFilter(DoubleCoordinate coord) { // todo
         final List<Route> routes = repository.findAll();
 
         return routes;
@@ -75,7 +79,7 @@ public class RouteService {
     public String validateCoordinates(List<DoubleCoordinate> coords, Integer length) {
         if (coords.size() < 2) {
             return "Маршрут занадто короткий";
-        } else if (!this.isInKyiv(coords)) {
+        } else if (!coords.stream().allMatch(RouteService::isInKyiv)) {
             return "Маршрут виходить за межі Києва";
         } else if (coords.size() > 5000) {
             return "Маршрут занадто складний";
@@ -99,8 +103,8 @@ public class RouteService {
         return (int) (length * 70 * 1000);
     }
 
-    private boolean isInKyiv(List<DoubleCoordinate> coords) {
-        return coords.stream().allMatch(Kyiv::isInside);
+    public static boolean isInKyiv(DoubleCoordinate coordinate) {
+        return Kyiv.contains(coordinate);
     }
 
     private List<Double[]> transformCoordinates(List<DoubleCoordinate> coords) {

@@ -2,13 +2,14 @@ package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.route.geom. DoubleCoordinate;
 import com.kamennova.doggies.route.geom.Vector;
+import com.kamennova.doggies.user.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RouteCounter {
-    private final HashMap<Vector, Set<Long>> store;
+    private final HashMap<Vector, Set<User>> store;
 
     public RouteCounter() {
         this.store = new HashMap<>();
@@ -25,7 +26,7 @@ public class RouteCounter {
             for (int i = 1; i < coords.size(); i++) {
                 final DoubleCoordinate curr = coords.get(i);
                 Vector vector = formVector(prev, curr);
-                this.put(vector, route.getUserId());
+                this.put(vector, route.getUser());
                 prev = curr;
             }
         }
@@ -33,35 +34,22 @@ public class RouteCounter {
 
     private Vector formVector(DoubleCoordinate a, DoubleCoordinate b) {
         return a.getLng() < b.getLng() ||
-                a.getLng() == b.getLng() && a.getLat() < b.getLat() ? new Vector(a, b) : new Vector(b, a);
+                a.getLng().equals(b.getLng()) && a.getLat() < b.getLat() ? new Vector(a, b) : new Vector(b, a);
     }
 
-    private void put(Vector vector, Long userId) {
-        final Set<Long> idSet = store.getOrDefault(vector, new HashSet<>());
-        idSet.add(userId);
-        store.put(vector, idSet);
-    }
-
-    /*public RouteCounter prune(){
-        final short minWalks = getMinWalksLimit();
-        final HashMap<Vector, Set<Long>> newStore = store.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().size() >= minWalks)
-                .collect(Collectors.toMap())
-                ;
-    }*/
-
-    private short getMinWalksLimit() {
-        return 1; // todo
+    private void put(Vector vector, User user) {
+        final Set<User> users = store.getOrDefault(vector, new HashSet<>());
+        users.add(user);
+        store.put(vector, users);
     }
 
     private List<CounterResult> merge() {
-        final HashMap<Set<Long>, ArrayList<Vector>> usersRoutes = new HashMap<>();
+        final HashMap<Set<User>, ArrayList<Vector>> usersRoutes = new HashMap<>();
 
-        store.forEach((vector, userIds) -> {
-            final ArrayList<Vector> existingRoutes = usersRoutes.getOrDefault(userIds, new ArrayList<>());
+        store.forEach((vector, users) -> {
+            final ArrayList<Vector> existingRoutes = usersRoutes.getOrDefault(users, new ArrayList<>());
             existingRoutes.add(vector);
-            usersRoutes.put(userIds, existingRoutes);
+            usersRoutes.put(users, existingRoutes);
         });
 
         return usersRoutes.entrySet().stream()
@@ -98,10 +86,6 @@ public class RouteCounter {
         }
 
         return routes;
-    }
-
-    private ArrayList<Double> vectorToCoordinates(Vector vector) {
-        return new ArrayList<>(Arrays.asList(vector.a.getLat(), vector.a.getLng(), vector.b.getLat(), vector.b.getLng()));
     }
 
     public List<CounterResult> getMap() {

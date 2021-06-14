@@ -1,15 +1,15 @@
 package com.kamennova.doggies.route.response;
 
-import com.kamennova.doggies.dog.response.DogOverview;
-
 import java.util.List;
 
 public class RouteOverview {
-    public Double[] coordinate;
-    public List<DogOverview> dogs;
+    public Long id;
+    public int length;
+    public List<Double[]> coordinates;
 
-    public RouteOverview(Double[] c, List<DogOverview> dogs){
-        this.dogs = dogs;
-        this.coordinate = c;
+    public RouteOverview(Long id, int length, List<Double[]> coords){
+        this.id = id;
+        this.length = length;
+        this.coordinates = coords;
     }
 }
