@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Set;
 
 public class RouteMap {
-    public Set<Long> dogIds;
+    public Set<Long> dogs;
     public List<List<Double[]>> routes;
 
     public RouteMap(Set<Long> dogIds, List<List<Double[]>> routes){
-        this.dogIds = dogIds;
+        this.dogs = dogIds;
         this.routes = routes;
     }
 }

@@ -10,7 +10,7 @@ const getRoutesMap = (lat, lng) => fetch(`${API_URL_BASE}/routes/details?lat=${l
 
 const drawLine = (group) => {
     const multi = new ol.geom.MultiLineString(group.routes).transform('EPSG:4326', 'EPSG:3857');
-    const feature = new ol.Feature({geometry: multi, color: 'brown', dogIds: group.dogIds, type: 'line'});
+    const feature = new ol.Feature({geometry: multi, dogs: group.dogs, type: 'line'});
     vectorSource.addFeature(feature);
     return feature;
 };
@@ -105,22 +105,27 @@ const displayDogs = (dogs, pixel) => {
         img.classList.add("avatar");
         img.src = getDogBreedPic(dog);
 
-        const sex = document.createElement('img');
-        sex.classList.add('sex-icon');
-        sex.src = dog.sex === 'm' ? '/img/male.svg' : '/img/female.svg';
-
-        const age = document.createElement('span');
-        age.classList.add('age');
-        age.innerText = (dog.age > 0 ? dog.age : '<1') + 'р.';
-
         const breedName = document.createElement('span');
         breedName.classList.add('breed');
-        breedName.innerText = dog.breed.name;
+        breedName.innerText = dog.breed.name !== null ? dog.breed.name : "Порода невідома";
 
         div.appendChild(img);
         div.appendChild(breedName);
-        div.appendChild(sex);
-        div.appendChild(age);
+
+        if (dog.sex) {
+            const sex = document.createElement('img');
+            sex.classList.add('sex-icon');
+            sex.src = dog.sex === 'm' ? '/img/male.svg' : '/img/female.svg';
+            div.appendChild(sex);
+        }
+
+        if (dog.age) {
+            const age = document.createElement('span');
+            age.classList.add('age');
+            age.innerText = (dog.age > 0 ? dog.age : '<1') + 'р.';
+            div.appendChild(age);
+        }
+
         dogPopup.appendChild(div);
     });
 
@@ -135,22 +140,14 @@ let selected = null;
 
 const highlightStyle = [
     new ol.style.Style({
-        fill: new ol.style.Fill({
-            color: 'rgba(255,255,255,0.7)',
-        }),
         stroke: new ol.style.Stroke({
-            color: 'rgba(255,255,255,0.7)',
+            color: '#252525',
             width: 3,
         }),
     }),
     new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: 7,
-            fill: new ol.style.Fill({color: 'red'}),
-            stroke: new ol.style.Stroke({
-                color: 'white',
-                width: 2,
-            }),
+        image: new ol.style.Icon({
+            src: '/img/paw_hover.svg',
         }),
     }),
 ];
@@ -167,8 +164,9 @@ const routeOnHover = (f, pixel) => {
     selected = f;
     f.setStyle(highlightStyle);
 
-    const dogs = f.get('type') === 'point' ? f.get('dogs') : getDogsByIds(f.get('dogIds'));
-    displayDogs(dogs, pixel);
+    const dogs = f.get('type') === 'point' ? f.get('dogs') : getDogsByIds(f.get('dogs'));
+    const UnknownDog = [ {id: null, breed: {name: null, pic: null}} ];
+    displayDogs(dogs.length > 0 ? dogs : UnknownDog, pixel);
 
     return true;
 };

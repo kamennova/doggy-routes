@@ -24,20 +24,20 @@ const vectorSource = new ol.source.Vector({
 const vectorLayer = new ol.layer.Vector({
     source: vectorSource,
     style: (feature, resolution) => {
+        const lineOpacity = feature.get("dogs") ? 0.4 + Math.min(feature.get("dogs").length, 3) * 0.2 : 1;
         return [
             new ol.style.Style({
-                stroke: new ol.style.Stroke({color: feature.get("color") || '#432828', width: 3})
+                stroke: new ol.style.Stroke({
+                    color: feature.get("color") || `rgba(113, 43, 22, ${lineOpacity})`,
+                    width: resolution < 6 ? 4 : 3,
+                })
             }),
             new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({color: '#432828'}),
-                    stroke: new ol.style.Stroke({
-                        color: 'white',
-                        width: 2,
-                    }),
+                image: new ol.style.Icon({
+                    src: '/img/paw.svg',
                 }),
-            }) ];
+            })
+        ]
     }
 
 });

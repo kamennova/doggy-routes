@@ -28,7 +28,7 @@ const signUpReq = (data) => {
         headers: {
             "Content-Type": "application/json",
         }
-    }).then(res => res.json());
+    }).then(res => res.status < 400 ? {} : res.json());
 };
 
 const displayError = (error) => {

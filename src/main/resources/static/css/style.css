@@ -12,7 +12,8 @@ body {
     line-height: 1.5;
     --bg-light: #f8f8f8;
     --primary-dark: #a8482b;
-    --primary: #643110;
+    /*--primary: #643110;*/
+    --primary: #292929;
     --primary-light: #a0553e;
 }
 
@@ -58,7 +59,7 @@ main {
 }
 
 .btn:hover {
-    background: #d5d5d5;
+    background-color: #d5d5d5;
 }
 
 .btn-smaller {
@@ -70,8 +71,8 @@ main {
 
 .btn-primary {
     color: white;
-    background: var(--primary);
-    border: 1px solid var(--primary-dark);
+    background: #252525;
+    border: none;
 }
 
 .btn-primary:hover {
@@ -494,7 +495,7 @@ input[type=radio]:checked + .switcher-btn:last-of-type {
     opacity: 1;
 }
 
-.routes-column, .route-form {
+.routes-column, .route-modal {
     transition: 0.2s linear left;
 }
 
@@ -534,7 +535,7 @@ input[type=radio]:checked + .switcher-btn:last-of-type {
     min-width: 100px;
 }
 
-.route-form {
+.route-modal {
     position: fixed;
     left: 120px;
     top: 30px;
@@ -549,12 +550,22 @@ input[type=radio]:checked + .switcher-btn:last-of-type {
     align-items: center;
 }
 
-.route-item .edit-btn {
+.route-item .view-btn {
     padding: 5px !important;
     margin-left: auto;
 }
 
-.route-form.closed {
+.view-btn {
+    width: 26px;
+    height: 26px;
+    background-image: url("/img/view.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 16px;
+    font-size: 0;
+}
+
+.route-modal.closed {
     left: -400px;
 }
 

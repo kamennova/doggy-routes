@@ -20,14 +20,6 @@ const getConnectionCoordinates = (start, end) => {
         .then(res => res.features[ 0 ].geometry.coordinates);
 };
 
-const reverse = (points) => {
-    for (let i = 0; i < points.length / 2; i++) {
-        const temp = points[ i * 2 ];
-        points[ i * 2 ] = points[ i * 2 + 1 ];
-        points[ i * 2 + 1 ] = temp;
-    }
-};
-
 const saveNewRoute = () => {
     return fetch(`${API_URL_BASE}/routes`, {
         method: "POST",
@@ -75,11 +67,14 @@ let FORM_MODE = FormModes.Create;
 const AnimationDuration = 200;
 const routeForm = document.getElementById("route-form");
 const routesCol = document.getElementById("routes-sidebar");
+const routeView = document.getElementById("route-view");
 
 const hide = (elem) => elem.classList.add("hidden");
 const show = (elem) => elem.classList.remove("hidden");
 const closeRouteForm = () => routeForm.classList.add("closed");
 const showRouteForm = () => routeForm.classList.remove("closed");
+const showRouteView = () => routeView.classList.remove("closed");
+const closeRouteView = () => routeView.classList.add("closed");
 const showRoutesCol = () => routesCol.classList.remove("closed");
 const closeRoutesCol = () => routesCol.classList.add("closed");
 
@@ -102,9 +97,25 @@ const openRouteForm = (routeIndex) => {
     setTimeout(clearMap, AnimationDuration * 2);
 };
 
+const openRouteView = (routeIndex) => {
+    closeRoutesCol();
+    document.getElementById("route-index").innerText = routeIndex + 1;
+    setTimeout(showRouteView, AnimationDuration);
+};
+
 // on route form close
 document.getElementById("route-form-cancel-btn").addEventListener("click", () => {
     closeRouteForm();
+    setTimeout(showRoutesCol, AnimationDuration);
+    setTimeout(() => {
+        clearMap();
+        drawAllRoutes();
+    }, AnimationDuration * 2);
+});
+
+// on route view close
+document.getElementById("route-back-btn").addEventListener("click", () => {
+    closeRouteView();
     setTimeout(showRoutesCol, AnimationDuration);
     setTimeout(() => {
         clearMap();
@@ -121,12 +132,16 @@ const drawRoute = (route) => {
     return feature;
 };
 
+const centerIn = (coord) => {
+    MapView.animate({center: ol.proj.fromLonLat(coord), duration: 600, zoom: 15});
+};
+
 const drawAllRoutes = () => {
     if (myRoutes.length === 0) {
         return;
     }
 
-    MapView.animate({center: ol.proj.fromLonLat(myRoutes[ 0 ].coordinates[ 0 ]), duration: 600,});
+    centerIn(myRoutes[ 0 ].coordinates[ 0 ]);
     myRoutes.forEach(drawRoute);
 };
 
@@ -203,4 +218,17 @@ const onEdit = (e) => {
     drawRoute(myRoutes[ index ]);
 };
 
-document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', onEdit));
+const onView = (e) => {
+    const id = Number(e.path[ 2 ].dataset.id);
+    const index = myRoutes.findIndex(elem => elem.id === id);
+    const route = myRoutes[ index ];
+
+    openRouteView(index);
+    setTimeout(() => {
+        clearMap();
+        drawRoute(route);
+        centerIn(route.coordinates[ 0 ])
+    }, AnimationDuration * 2);
+};
+
+document.querySelectorAll('.view-btn').forEach(btn => btn.addEventListener('click', onView));
