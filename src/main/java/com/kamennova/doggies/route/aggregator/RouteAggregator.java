@@ -1,11 +1,14 @@
-package com.kamennova.doggies.route;
+package com.kamennova.doggies.route.aggregator;
 
+import com.kamennova.doggies.route.Route;
 import com.kamennova.doggies.route.geom.Vector;
 import com.kamennova.doggies.user.User;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Returns routes vectors grouped by unique sets of users walking them
+ */
 public class RouteAggregator {
     private final HashMap<Vector, Set<User>> store;
 
@@ -22,12 +25,14 @@ public class RouteAggregator {
     }
 
     private void put(Vector vector, User user) {
-        final Set<User> users = store.getOrDefault(vector.alignToEastNorth(), new HashSet<>());
+        // align vectors to same direction to avoid storing 2 identical opposite vectors
+        final Vector aligned = vector.alignToEastNorth();
+        final Set<User> users = store.getOrDefault(aligned, new HashSet<>());
         users.add(user);
-        store.put(vector, users);
+        store.put(aligned, users);
     }
 
-    public List<RouteGroup> getMap() {
+    public Map<Set<User>, ArrayList<Vector>> getMap() {
         final Map<Set<User>, ArrayList<Vector>> usersVectors = new HashMap<>();
 
         // reverse map (vector -> users) to (users -> vectors)
@@ -37,8 +42,6 @@ public class RouteAggregator {
             usersVectors.put(users, existingVectors);
         });
 
-        return usersVectors.entrySet().stream()
-                .map(entry -> new RouteGroup(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        return usersVectors;
     }
 }

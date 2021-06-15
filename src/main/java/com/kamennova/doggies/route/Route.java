@@ -23,11 +23,8 @@ public class Route {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "start_id", referencedColumnName = "id", nullable = false)
@@ -49,7 +46,6 @@ public class Route {
         this.isActive = true;
         this.length = length;
         this.compressedCoordinates = CoordinatesCoder.encode(coords);
-        this.userId = user.getId();
 
         final DoubleCoordinate start = coords.get(0);
         this.start = new Coordinate(start.getLat(), start.getLng());
@@ -60,10 +56,6 @@ public class Route {
 
     public Long getId() {
         return this.id;
-    }
-
-    public Long getUserId() {
-        return this.userId;
     }
 
     public Integer getLength() {
@@ -121,7 +113,6 @@ public class Route {
 
     public void setUser(User user) {
         this.user = user;
-        this.userId = user.getId();
     }
 
     public void setMedian(Coordinate c) {

@@ -9,7 +9,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Encodes & decodes coordinates.
+ * Encoding:
+ * - get minutes and seconds of coordinate (6 digits after comma):
+ *   Kyiv latitude & and longitude stays in one degree range (30, 50)
+ * - get subsequent coordinate differences
+ * - transform differences array to string, separating coordinates with ';' and coordinate dimensions with ','
+ * - full start coordinate is stored separately
+ */
 public class CoordinatesCoder {
+    public static String encode(List<DoubleCoordinate> input) {
+        final ArrayList<IntCoordinate> output = new ArrayList<>();
+        BaseCoordinate<Integer> prevReduced = input.get(0).apply(CoordinatesCoder::getMinAndSec);
+
+        for (int i = 1; i < input.size(); i++) {
+            final DoubleCoordinate coordFull = input.get(i);
+            final BaseCoordinate<Integer> coordReduced = coordFull.apply(CoordinatesCoder::getMinAndSec);
+            final IntCoordinate diff = new IntCoordinate(coordReduced.getLat() - prevReduced.getLat(), coordReduced.getLng() - prevReduced.getLng());
+
+            if (diff.getLat() == 0 && diff.getLng() == 0) {
+                continue;
+            }
+
+            output.add(diff);
+            prevReduced = coordReduced;
+        }
+
+        return coordsToString(output);
+    }
+
     public static List<IntCoordinate> decode(String compressed, DoubleCoordinate start) {
         final List<IntCoordinate> diffs = stringToCoords(compressed);
         final ArrayList<IntCoordinate> output = new ArrayList<>();
@@ -33,26 +62,6 @@ public class CoordinatesCoder {
 
     public static Integer getMinAndSec(Double point) {
         return (int) Math.round((point - Math.floor(point)) * 1000000);
-    }
-
-    public static String encode(List<DoubleCoordinate> input) {
-        final ArrayList<IntCoordinate> output = new ArrayList<>();
-        BaseCoordinate<Integer> prevReduced = input.get(0).apply(CoordinatesCoder::getMinAndSec);
-
-        for (int i = 1; i < input.size(); i++) {
-            final DoubleCoordinate coordFull = input.get(i);
-            final BaseCoordinate<Integer> coordReduced = coordFull.apply(CoordinatesCoder::getMinAndSec);
-            final IntCoordinate diff = new IntCoordinate(coordReduced.getLat() - prevReduced.getLat(), coordReduced.getLng() - prevReduced.getLng());
-
-            if (diff.getLat() == 0 && diff.getLng() == 0) { // todo why?
-                continue;
-            }
-
-            output.add(diff);
-            prevReduced = coordReduced;
-        }
-
-        return coordsToString(output);
     }
 
     private static String coordsToString(List<IntCoordinate> coords) {

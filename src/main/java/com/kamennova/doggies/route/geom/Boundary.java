@@ -1,5 +1,9 @@
 package com.kamennova.doggies.route.geom;
 
+/**
+ * Rectangle boundary with left and right representing min and max longitude,
+ * bottom and top - min & max latitude
+ */
 public class Boundary {
     double left;
     double right;

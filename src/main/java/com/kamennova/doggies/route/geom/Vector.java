@@ -1,7 +1,5 @@
 package com.kamennova.doggies.route.geom;
 
-import com.kamennova.doggies.route.Coordinates;
-
 import java.util.*;
 
 public class Vector {

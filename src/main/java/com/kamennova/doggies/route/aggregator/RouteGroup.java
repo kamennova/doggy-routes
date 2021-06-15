@@ -1,31 +1,28 @@
-package com.kamennova.doggies.route;
+package com.kamennova.doggies.route.aggregator;
 
+import com.kamennova.doggies.route.geom.Coordinates;
 import com.kamennova.doggies.route.geom.DoubleCoordinate;
 import com.kamennova.doggies.route.geom.Vector;
-import com.kamennova.doggies.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.Set;
 import java.util.stream.IntStream;
 
+/**
+ * Connects vectors into groups of routes, ignoring direction
+ */
 public class RouteGroup {
-    public Set<User> users;
-    public ArrayList<Coordinates> routes;
-
-    RouteGroup(Set<User> users, ArrayList<Vector> vectors) {
-        this.users = users;
-        this.routes = group(vectors);
+    public RouteGroup() {
     }
 
-    private ArrayList<Coordinates> group(List<Vector> vectors) {
+    public static ArrayList<Coordinates> group(List<Vector> vectors) {
         final ArrayList<Coordinates> startGroups = formStartGroups(vectors);
         // todo connect
         return startGroups;
     }
 
-    private ArrayList<Coordinates> formStartGroups(List<Vector> vectors) {
+    private static ArrayList<Coordinates> formStartGroups(List<Vector> vectors) {
         final ArrayList<Coordinates> routes = new ArrayList<>();
 
         for (Vector vector : vectors) {

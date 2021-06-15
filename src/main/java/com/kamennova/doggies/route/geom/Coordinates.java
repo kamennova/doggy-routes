@@ -1,7 +1,4 @@
-package com.kamennova.doggies.route;
-
-import com.kamennova.doggies.route.geom.DoubleCoordinate;
-import com.kamennova.doggies.route.geom.Vector;
+package com.kamennova.doggies.route.geom;
 
 import java.util.ArrayList;
 

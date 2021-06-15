@@ -2,8 +2,11 @@ package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.dog.Dog;
 import com.kamennova.doggies.dog.response.DogOverview;
+import com.kamennova.doggies.route.aggregator.RouteAggregator;
+import com.kamennova.doggies.route.aggregator.RouteGroup;
 import com.kamennova.doggies.route.geom.Boundary;
 import com.kamennova.doggies.route.geom.DoubleCoordinate;
+import com.kamennova.doggies.route.geom.Vector;
 import com.kamennova.doggies.route.response.PublicRouteOverview;
 import com.kamennova.doggies.route.response.RouteMap;
 import com.kamennova.doggies.route.response.RouteOverview;
@@ -12,10 +15,7 @@ import com.kamennova.doggies.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,9 +39,9 @@ public class RouteService {
     }
 
     /**
-     * Returns median point coordinates with dogs of all routes.
+     * Returns every route's median point coordinate and dogs
      */
-    public List<PublicRouteOverview> getRoutesOverview() {
+    public List<PublicRouteOverview> getMapOverview() {
         return repository.findAll().stream()
                 .map(route -> new PublicRouteOverview(
                         transformCoordinate(route.getMedian()),
@@ -50,14 +50,14 @@ public class RouteService {
     }
 
     /**
-     * Fetches routes in set radius of coordinate & merges dogs info on each route vector
+     * Returns groups of vectors with corresponding dogs ids
      */
-    public List<RouteMap> getRouteMaps(List<Route> routes) {
-        final RouteAggregator aggregator = new RouteAggregator(routes);
+    public List<RouteMap> getDetailedMap(List<Route> routes) {
+        final Map<Set<User>, ArrayList<Vector>> userVectors = new RouteAggregator(routes).getMap();
 
-        return aggregator.getMap().stream().map(obj -> new RouteMap(
-                obj.users.stream().flatMap(u -> u.getDogs().stream().map(Dog::getId)).collect(Collectors.toSet()),
-                obj.routes.stream().map(r -> transformCoordinates(r.get())).collect(Collectors.toList())) // todo?
+        return userVectors.entrySet().stream().map(entry -> new RouteMap(
+                entry.getKey().stream().flatMap(u -> u.getDogs().stream().map(Dog::getId)).collect(Collectors.toSet()),
+                RouteGroup.group(entry.getValue()).stream().map(r -> transformCoordinates(r.get())).collect(Collectors.toList())) // todo?
         ).collect(Collectors.toList());
     }
 
@@ -67,12 +67,18 @@ public class RouteService {
                 .map(Dog::getOverview).collect(Collectors.toSet());
     }
 
-    public List<Route> findWithFilter(DoubleCoordinate coord) { // todo
+    /**
+     * Finds all routes in 30km radius of coordinate
+     */
+    public List<Route> findWithFilter(DoubleCoordinate coordinate) { // todo
         final List<Route> routes = repository.findAll();
 
         return routes;
     }
 
+    /**
+     * Transforms 1-dimensional array of Doubles into DoubleCoordinates array
+     */
     public List<DoubleCoordinate> foldToCoordinates(List<Double> arr) {
         final List<DoubleCoordinate> result = new ArrayList<>();
 
@@ -106,7 +112,6 @@ public class RouteService {
             length += Math.sqrt(Math.pow(curr.getLat() - prev.getLat(), 2) + Math.pow(curr.getLng() - prev.getLng(), 2));
         }
 
-        System.out.println(length);
         return (int) (length * 70 * 100);
     }
 
@@ -118,6 +123,9 @@ public class RouteService {
         return coords.stream().map(RouteService::transformCoordinate).collect(Collectors.toList());
     }
 
+    /**
+     * Transforms DoubleCoordinate into array of doubles of OpenLayers format ([lng, lat])
+     */
     public static Double[] transformCoordinate(DoubleCoordinate c) {
         return new Double[]{c.getLng(), c.getLat()};
     }

@@ -49,7 +49,7 @@ public class RouteController {
     @GetMapping("")
     ResponseEntity<Map<String, Object>> overview() {
         Map<String, Object> res = new HashMap<>();
-        res.put("overview", service.getRoutesOverview());
+        res.put("overview", service.getMapOverview());
 
         return ResponseEntity.ok(res);
     }
@@ -65,7 +65,7 @@ public class RouteController {
         }
 
         final List<Route> routes = service.findWithFilter(mapCenter);
-        res.put("lines", service.getRouteMaps(routes));
+        res.put("lines", service.getDetailedMap(routes));
         res.put("dogs", service.getRoutesDogs(routes));
 
         return ResponseEntity.ok(res);

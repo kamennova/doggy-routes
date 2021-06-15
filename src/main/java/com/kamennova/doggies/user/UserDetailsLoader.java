@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-class UserDetailsLoader implements UserDetailsService {
+public class UserDetailsLoader implements UserDetailsService {
     private final UserRepository repository;
     private final String role;
 
