@@ -51,13 +51,12 @@ const addRouteStop = (point) => {
     }
 };
 
-map.on('click', (event) => {
+const addPointFunc = (event) => {
     const point = new ol.geom.Point(event.coordinate);
     addRouteStop(point);
-
     const feature = new ol.Feature({type: 'icon', geometry: point,});
     vectorSource.addFeature(feature);
-});
+};
 
 // === Init UI ===
 
@@ -81,6 +80,7 @@ const closeRoutesCol = () => routesCol.classList.add("closed");
 // on route form open
 document.getElementById("btn-add-route").addEventListener("click", () => {
     openRouteForm(document.getElementsByClassName("route-item").length + 1);
+    map.on('click', addPointFunc);
 });
 
 const openRouteForm = (routeIndex) => {
@@ -106,6 +106,7 @@ const openRouteView = (routeIndex) => {
 // on route form close
 document.getElementById("route-form-cancel-btn").addEventListener("click", () => {
     closeRouteForm();
+    map.un('click', addPointFunc);
     setTimeout(showRoutesCol, AnimationDuration);
     setTimeout(() => {
         clearMap();
