@@ -9,8 +9,26 @@
 <main id="map-page">
     <div id="map" class="map"></div>
     <div id="alerts-container" class="alerts-container"></div>
+    <article class="map-overview">
+        <div>
+            <strong id="routes-num" th:text="${routesCount}"></strong>
+            <span th:text="${routesCount % 10 == 1 ? 'маршрут' : ((routesCount % 10 != 0 && routesCount % 10 < 5) ? 'маршрути' : 'маршрутів')}">
+            </span> 🧭
+            <strong style="margin-left: 5px;" id="dogs-num" th:text="${#lists.size(dogs)}"></strong>
+            <span th:text="${dogsCount % 10 == 1 ? 'собака' : ((dogsCount % 10 != 0 && dogsCount % 10 < 5) ? 'собаки' : 'собак')}">
+            </span> 🐶
+        </div>
+        <p class="desc">
+            Знайдіть своєму песику компанію для прогулянки
+        </p>
+    </article>
     <article id="dog-popup" class="hidden"></article>
 </main>
+
+<script th:inline="javascript">
+    const Dogs = [[${dogs}]];
+    const MapOverview = [[${overview}]];
+</script>
 <script type="text/javascript" src="/js/mapInit.js"></script>
 <script type="text/javascript" src="/js/index.js"></script>
 </body>

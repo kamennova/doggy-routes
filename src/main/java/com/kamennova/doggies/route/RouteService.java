@@ -45,7 +45,7 @@ public class RouteService {
         return repository.findAll().stream()
                 .map(route -> new PublicRouteOverview(
                         transformCoordinate(route.getMedian()),
-                        route.getUser().getDogs().stream().map(Dog::getOverview).collect(Collectors.toList())))
+                        route.getUser().getDogs().stream().map(Dog::getId).collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 

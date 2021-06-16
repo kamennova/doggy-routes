@@ -1,9 +1,5 @@
-let Dogs = [];
-
 const hide = (elem) => elem.classList.add('hidden');
 const show = (elem) => elem.classList.remove('hidden');
-
-const getRoutesOverview = () => fetch(`${API_URL_BASE}/routes`).then(res => res.json());
 
 const getRoutesMap = (lat, lng) => fetch(`${API_URL_BASE}/routes/details?lat=${lat}&lng=${lng}`)
     .then(res => res.json());
@@ -26,13 +22,10 @@ const update = () => {
     const zoom = MapView.getZoom();
 
     if (zoom < ReqZoom) {
-        getRoutesOverview().then(res => {
-            clearMap();
-            res.overview.forEach(drawPoint);
-        });
+        clearMap();
+        MapOverview.forEach(drawPoint);
     } else {
         getRoutesMap(point[ 1 ], point[ 0 ], zoom).then(res => {
-            Dogs = res.dogs;
             clearMap();
             res.lines.forEach(drawLine);
         });
@@ -164,7 +157,7 @@ const routeOnHover = (f, pixel) => {
     selected = f;
     f.setStyle(highlightStyle);
 
-    const dogs = f.get('type') === 'point' ? f.get('dogs') : getDogsByIds(f.get('dogs'));
+    const dogs = getDogsByIds(f.get('dogs'));
     const UnknownDog = [ {id: null, breed: {name: null, pic: null}} ];
     displayDogs(dogs.length > 0 ? dogs : UnknownDog, pixel);
 

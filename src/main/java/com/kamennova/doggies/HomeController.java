@@ -1,7 +1,9 @@
 package com.kamennova.doggies;
 
 import com.kamennova.doggies.dog.DogService;
+import com.kamennova.doggies.dog.response.DogOverview;
 import com.kamennova.doggies.route.RouteService;
+import com.kamennova.doggies.route.response.PublicRouteOverview;
 import com.kamennova.doggies.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -25,6 +28,15 @@ public class HomeController {
     @GetMapping(value = {"/", "/index"})
     public String index(Model model, @AuthenticationPrincipal User user) {
         model.addAttribute("isSignedIn", user != null);
+
+        final List<DogOverview> dogs = dogService.getDogsOverview();
+        final List<PublicRouteOverview> routes = routeService.getMapOverview();
+
+        model.addAttribute("dogs", dogs);
+        model.addAttribute("dogsCount", dogs.size());
+        model.addAttribute("overview", routes);
+        model.addAttribute("routesCount", routes.size());
+
         return "index";
     }
 
@@ -43,12 +55,6 @@ public class HomeController {
         model.addAttribute("routes", routeService.getRoutesInfoOfUser(principal.getId()));
 
         return "routes";
-    }
-
-    @GetMapping("/about")
-    public String about(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("isSignedIn", user != null);
-        return "about";
     }
 
     @GetMapping("/signUp")

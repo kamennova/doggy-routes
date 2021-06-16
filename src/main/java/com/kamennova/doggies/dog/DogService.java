@@ -47,7 +47,7 @@ public class DogService {
             return "Введіть коректний рік народження";
         } else if (breed.isEmpty()) {
             return "Введіть коректну породу собаки";
-        } else if (repository.findByName(name).isPresent()){
+        } else if (repository.findByName(name).isPresent()) {
             return "Собака з таким імʼям вже створена";
         }
 
@@ -60,5 +60,9 @@ public class DogService {
         routeRepository.showRoutesByUserId(user.getId());
 
         return newDog;
+    }
+
+    public List<DogOverview> getDogsOverview() {
+        return repository.findAll().stream().map(Dog::getOverview).collect(Collectors.toList());
     }
 }
