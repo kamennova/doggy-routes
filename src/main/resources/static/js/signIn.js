@@ -19,7 +19,7 @@ const validateData = (data) => {
     return null;
 };
 
-const signInReq = (data) => fetch(`/signIn`, {
+const signInReq = (data) => fetch('signIn', {
         method: "POST",
         body: encodeURI(`username=${data.username}&password=${data.password}`),
         headers: {
@@ -42,7 +42,7 @@ document.getElementById("btn-signIn").addEventListener("click", () => {
 
         signInReq(data).then(res => {
             if (res.url.includes('error')) {
-                document.location.href = '/signIn?error'
+                document.location.href = 'signIn?error'
             } else {
                 document.location.href = res.url;
             }

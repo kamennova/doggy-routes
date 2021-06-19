@@ -34,7 +34,7 @@ const vectorLayer = new ol.layer.Vector({
             }),
             new ol.style.Style({
                 image: new ol.style.Icon({
-                    src: '/img/paw.svg',
+                    src: 'img/paw.svg',
                 }),
             })
         ]

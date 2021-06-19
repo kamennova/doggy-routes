@@ -7,12 +7,12 @@
 <th:block th:fragment="menu">
     <nav class="menu">
         <a class="logo main-logo" href="/">
-            <img src="/img/logo_white.png" width="28"/>
+            <img src="img/logo_white.png" width="28"/>
             <span>Doggy routes</span>
         </a>
         <ul class="menu-links">
             <li>
-                <a href="/">
+                <a href="index">
                     <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px"
                          fill="#f8f8f8">
                         <path d="M0 0h24v24H0V0z" fill="none"/>
@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li>
-                <a href="/my-routes">
+                <a href="my-routes">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
                          fill="#FFFFFF">
                         <path d="M0 0h24v24H0V0z" fill="none"/>
@@ -38,7 +38,7 @@
                 </a>
             </li>
             <li>
-                <a href="/my-dogs">
+                <a href="my-dogs">
                     <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px"
                          fill="#f8f8f8">
                         <path d="M0 0h24v24H0z" fill="none"/>
@@ -53,7 +53,7 @@
                 </a>
             </li>
             <li th:if="${isSignedIn}">
-                <a href="/logout">
+                <a href="logout">
                     <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px"
                          viewBox="0 0 24 24" width="24px" fill="#fff">
                         <g>

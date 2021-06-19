@@ -577,7 +577,7 @@ input[type=radio]:checked + .switcher-btn:last-of-type {
 .view-btn {
     width: 26px;
     height: 26px;
-    background-image: url("/img/view.svg");
+    background-image: url("../img/view.svg");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 16px;

@@ -11,7 +11,7 @@ document.getElementById("btn-delete-dog").addEventListener("click", () => {
     deleteDogReq(DeleteDogId).then(() => {
         DeleteDogId = undefined;
         close(deleteModal);
-        document.location.href = "/my-dogs";
+        document.location.href = "my-dogs";
     });
 });
 
@@ -65,7 +65,7 @@ document.getElementById("btn-save-dog").addEventListener("click", () => {
             if (res.error) {
                 setError(res.error);
             } else {
-                document.location.href = "/my-dogs";
+                document.location.href = "my-dogs";
             }
         });
     } else {

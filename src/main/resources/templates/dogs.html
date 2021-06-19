@@ -14,8 +14,8 @@
         <article class="block item dog-item" th:if="${dogs}" th:each="dog : ${dogs}">
             <div class="row block-header">
                 <h2 class="title block-title" th:text="${dog.name}"></h2>
-                <img src="img/female.svg" class="icon" th:if="${dog.sex.equals('f')}"/>
-                <img src="img/male.svg" class="icon" th:if="${dog.sex.equals('m')}"/>
+                <img src="img/female.svg" class="icon" th:if="${dog.sex == 'f'}"/>
+                <img src="img/male.svg" class="icon" th:if="${dog.sex == 'm'}"/>
             </div>
 
             <div class="features row">
@@ -80,12 +80,12 @@
                     <div class="switcher">
                         <input type="radio" name="dog-sex" id="sex-female" value="female" class="visually-hidden" checked>
                         <label class="switcher-btn" for="sex-female">
-                            <img src="/img/female.svg" class="icon">
+                            <img src="img/female.svg" class="icon">
                         </label>
 
                         <input type="radio" name="dog-sex" id="sex-male" value="male" class="visually-hidden">
                         <label class="switcher-btn" for="sex-male">
-                            <img src="/img/male.svg" class="icon">
+                            <img src="img/male.svg" class="icon">
                         </label>
                     </div>
                 </div>
@@ -117,6 +117,6 @@
     </article>
 </main>
 
-<script src="/js/dogs.js"></script>
+<script src="js/dogs.js"></script>
 </body>
 </html>

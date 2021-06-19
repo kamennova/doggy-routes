@@ -47,7 +47,7 @@ document.getElementById("btn-signUp").addEventListener("click", () => {
             if (res.error) {
                 displayError(res.error);
             } else {
-                document.location.href = "/signIn";
+                document.location.href = "signIn";
             }
         });
     }

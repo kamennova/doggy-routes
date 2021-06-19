@@ -82,6 +82,8 @@ create table dog
   year_born integer
 );
 
+create cast (character varying as sex) with inout as implicit;
+
 alter table dog
   owner to postgres;
 

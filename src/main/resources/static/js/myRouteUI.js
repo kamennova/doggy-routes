@@ -165,7 +165,7 @@ document.getElementById("route-form-save-btn").addEventListener("click", () => {
             if (res.error) {
                 displayError(res.error);
             } else {
-                document.location.href = "/my-routes";
+                document.location.href = "my-routes";
             }
         });
     } else {

@@ -108,7 +108,7 @@ const displayDogs = (dogs, pixel) => {
         if (dog.sex) {
             const sex = document.createElement('img');
             sex.classList.add('sex-icon');
-            sex.src = dog.sex === 'm' ? '/img/male.svg' : '/img/female.svg';
+            sex.src = dog.sex === 'm' ? 'img/male.svg' : 'img/female.svg';
             div.appendChild(sex);
         }
 
@@ -140,7 +140,7 @@ const highlightStyle = [
     }),
     new ol.style.Style({
         image: new ol.style.Icon({
-            src: '/img/paw_hover.svg',
+            src: 'img/paw_hover.svg',
         }),
     }),
 ];
