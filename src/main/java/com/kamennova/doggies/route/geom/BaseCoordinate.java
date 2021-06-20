@@ -7,6 +7,8 @@ public class BaseCoordinate<T extends Number> {
     private T lat;
     private T lng;
 
+    BaseCoordinate(){}
+
     BaseCoordinate(T lat, T lng){
         this.lat = lat;
         this.lng = lng;
@@ -33,7 +35,7 @@ public class BaseCoordinate<T extends Number> {
     }
 
     public <G extends Number> BaseCoordinate<G> apply(Function<T, G> func){
-        return new BaseCoordinate<G>(func.apply(getLat()), func.apply(getLng()));
+        return new BaseCoordinate<>(func.apply(getLat()), func.apply(getLng()));
     }
 
     @Override

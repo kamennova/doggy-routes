@@ -1,6 +1,6 @@
 # Doggy routes
 
-##### [https://kyiv.doggy-routes.info](https://kyiv.doggy-routes.info)
+##### [http://doggy-routes.info](http://doggy-routes.info)
 
 Web app displaying dog walking routes - meet other dog owners and socialize your doggy 🐶
 

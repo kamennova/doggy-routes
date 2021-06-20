@@ -1,11 +1,14 @@
 package com.kamennova.doggies.route;
 
+import com.kamennova.doggies.route.geom.DoubleCoordinate;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name="coordinates")
-public class Coordinate {
-    Coordinate(){
+@Table(name = "coordinates")
+public class CoordinateEntity extends DoubleCoordinate {
+    public CoordinateEntity() {
+        super();
     }
 
     private @Id
@@ -15,7 +18,7 @@ public class Coordinate {
     private Double lat;
     private Double lng;
 
-    public Coordinate(Double lat, Double lng){
+    public CoordinateEntity(Double lat, Double lng) {
         this.lat = lat;
         this.lng = lng;
     }

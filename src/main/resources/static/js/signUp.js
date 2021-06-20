@@ -21,15 +21,13 @@ const validateData = (data) => {
     return null;
 };
 
-const signUpReq = (data) => {
-    return fetch(`${API_URL_BASE}/users`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-        }
-    }).then(res => res.status < 400 ? {} : res.json());
-};
+const signUpReq = (data) => fetch(`${API_URL_BASE}/users`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+        "Content-Type": "application/json",
+    }
+}).then(res => res.status < 400 ? {} : res.json());
 
 const displayError = (error) => {
     document.getElementById("form-errors").innerText = error;
@@ -47,7 +45,7 @@ document.getElementById("btn-signUp").addEventListener("click", () => {
             if (res.error) {
                 displayError(res.error);
             } else {
-                document.location.href = "signIn";
+                goTo("signIn");
             }
         });
     }

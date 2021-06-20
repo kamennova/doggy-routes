@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "dog")
 public class Dog implements Serializable {
-     public Dog() {
+    public Dog() {
     }
 
     private @Id
@@ -55,10 +55,6 @@ public class Dog implements Serializable {
         return this.breed;
     }
 
-    public void setBreed(DogBreed breed) {
-        this.breed = breed;
-    }
-
     public Sex getSex() {
         return this.sex;
     }
@@ -69,6 +65,10 @@ public class Dog implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setBreed(DogBreed breed) {
+        this.breed = breed;
     }
 
     public void setSex(Sex sex) {
@@ -116,10 +116,10 @@ public class Dog implements Serializable {
 
     @Override
     public String toString() {
-        return "Dog{" + "id=" + this.id + ", description='" + this.name + '}';
+        return "Dog{" + "id=" + this.id + ", name='" + this.name + '}';
     }
 
-    public static enum Sex {
+    public enum Sex {
         Male("male"),
         Female("female");
 
@@ -135,7 +135,7 @@ public class Dog implements Serializable {
         }
 
         @JsonCreator
-        public static Dog.Sex fromText(String text){
+        public static Dog.Sex fromText(String text) {
             return text.toLowerCase().equals("female") ? Sex.Female : Sex.Male;
         }
     }

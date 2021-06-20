@@ -1,6 +1,5 @@
 package com.kamennova.doggies.route;
 
-import com.kamennova.doggies.dog.DogRepository;
 import com.kamennova.doggies.route.geom.DoubleCoordinate;
 import com.kamennova.doggies.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +21,21 @@ public class RouteController {
     @Autowired
     RouteRepository repository;
 
-    @Autowired
-    DogRepository dogRepository;
-
     @PostMapping(value = "", consumes = "application/json")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> create(@RequestBody RouteReq body, @AuthenticationPrincipal User user) {
         final Map<String, Object> res = new HashMap<>();
 
-        final List<DoubleCoordinate> coords = service.foldToCoordinates(body.coordinates);
-        final int length = service.getRouteLength(coords);
-        final String coordsError = service.validateCoordinates(coords, length);
+        final List<DoubleCoordinate> coordinates = service.foldToCoordinates(body.coordinates);
+        final int length = service.getRouteLength(coordinates);
+        final String error = service.validateCoordinates(coordinates, length);
 
-        if (!coordsError.isEmpty()) {
-            res.put("error", coordsError);
+        if (!error.isEmpty()) {
+            res.put("error", error);
             return ResponseEntity.badRequest().body(res);
         }
 
-        final Route route = new Route(coords, user, length);
+        final Route route = new Route(coordinates, user, length);
         repository.save(route);
 
         res.put("id", route.getId());
@@ -59,14 +55,15 @@ public class RouteController {
         Map<String, Object> res = new HashMap<>();
 
         final DoubleCoordinate mapCenter = new DoubleCoordinate(lat, lng);
-        if (!RouteService.isInKyiv(mapCenter)) {
-            res.put("error", "Координата знаходиться за межами Києва");
+        final String centerError = service.validateCoordinate(mapCenter);
+
+        if (!centerError.isEmpty()) {
+            res.put("error", centerError);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
         final List<Route> routes = service.findWithFilter(mapCenter);
         res.put("lines", service.getDetailedMap(routes));
-        res.put("dogs", service.getRoutesDogs(routes));
 
         return ResponseEntity.ok(res);
     }

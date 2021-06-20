@@ -9,9 +9,12 @@
   <div id="map" class="map"></div>
 
   <article class="route-modal block closed" id="route-form">
-    <h5 class="title info-title action" id="new-route-label">Новий маршрут</h5>
-    <h2 class="title route-name">Маршрут #<span id="new-route-index">1</span></h2>
+    <h3 class="title info-title action" id="new-route-label">Новий маршрут</h3>
+    <h4 class="title route-name">Маршрут #<span id="new-route-index">1</span></h4>
 
+    <p class="input-tip">
+      Клікніть на карту, щоб додати точку маршруту
+    </p>
     <p id="route-error" class="form-error"></p>
 
     <div class="row btn-row">
@@ -21,7 +24,7 @@
   </article>
 
   <article class="route-modal block closed" id="route-view">
-    <h2 class="title route-name">Маршрут #<span id="route-index">1</span></h2>
+    <h3 class="title route-name">Маршрут #<span id="route-index">1</span></h3>
 
     <div class="row btn-row">
       <button class="btn btn-smaller" id="route-back-btn">Назад</button>
@@ -66,6 +69,7 @@
     </div>
   </article>
 </main>
+
 <script th:inline="javascript">
     const colors = ["#643110", "#000", "#624545", "#4c2515"];
     const myRoutes = [[${routes}]];

@@ -1,7 +1,6 @@
 package com.kamennova.doggies.route;
 
 import com.kamennova.doggies.dog.Dog;
-import com.kamennova.doggies.dog.response.DogOverview;
 import com.kamennova.doggies.route.aggregator.RouteAggregator;
 import com.kamennova.doggies.route.aggregator.RouteGroup;
 import com.kamennova.doggies.route.geom.Boundary;
@@ -61,12 +60,6 @@ public class RouteService {
         ).collect(Collectors.toList());
     }
 
-    public Set<DogOverview> getRoutesDogs(List<Route> routes) {
-        final Set<User> users = routes.stream().map(Route::getUser).collect(Collectors.toSet());
-        return users.stream().flatMap(u -> u.getDogs().stream())
-                .map(Dog::getOverview).collect(Collectors.toSet());
-    }
-
     /**
      * Finds all routes in 30km radius of coordinate
      */
@@ -87,6 +80,14 @@ public class RouteService {
         }
 
         return result;
+    }
+
+    public String validateCoordinate(DoubleCoordinate coordinate) {
+        if (!isInKyiv(coordinate)) {
+            return "Координата знаходиться за межами Києва";
+        }
+
+        return "";
     }
 
     public String validateCoordinates(List<DoubleCoordinate> coords, Integer length) {

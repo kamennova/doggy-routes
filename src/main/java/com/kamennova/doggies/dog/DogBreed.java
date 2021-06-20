@@ -8,7 +8,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "dog_breed")
 public class DogBreed implements Serializable {
-
     DogBreed() {
     }
 
@@ -19,6 +18,22 @@ public class DogBreed implements Serializable {
     private String name;
     private String imageSrc;
 
+    public Short getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageSrc() {
+        return this.imageSrc;
+    }
+
+    public void setId(Short id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -27,23 +42,7 @@ public class DogBreed implements Serializable {
         this.imageSrc = src;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
-    public String getImageSrc(){
-        return this.imageSrc;
-    }
-
-    public void setId(Short id){
-        this.id = id;
-    }
-
-    public Short getId(){
-        return this.id;
-    }
-
-    public BreedOverview getOverview(){
+    public BreedOverview getOverview() {
         return new BreedOverview(name, imageSrc);
     }
 }

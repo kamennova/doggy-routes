@@ -42,9 +42,9 @@ document.getElementById("btn-signIn").addEventListener("click", () => {
 
         signInReq(data).then(res => {
             if (res.url.includes('error')) {
-                document.location.href = 'signIn?error'
+                goTo('signIn?error');
             } else {
-                document.location.href = res.url;
+                goTo(res.url);
             }
         });
     }

@@ -5,7 +5,7 @@
 <body>
 <main class="page-content">
     <div class="form-container">
-        <div th:replace="fragments/logoBig :: logo"></div>
+        <a th:replace="fragments/logoBig :: logo"></a>
         <h2 class="page-title" th:text="${code}"></h2>
         <p th:if="${code} != 404">На жаль, сталася помилка</p>
         <p th:if="${code} == 404">Сторінку не знайдено</p>

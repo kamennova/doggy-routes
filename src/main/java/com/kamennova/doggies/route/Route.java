@@ -28,11 +28,11 @@ public class Route {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "start_id", referencedColumnName = "id", nullable = false)
-    private Coordinate start;
+    private CoordinateEntity start;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "median_id", referencedColumnName = "id", nullable = false)
-    private Coordinate median;
+    private CoordinateEntity median;
 
     @Column(name = "coordinates")
     private String compressedCoordinates;
@@ -48,10 +48,10 @@ public class Route {
         this.compressedCoordinates = CoordinatesCoder.encode(coords);
 
         final DoubleCoordinate start = coords.get(0);
-        this.start = new Coordinate(start.getLat(), start.getLng());
+        this.start = new CoordinateEntity(start.getLat(), start.getLng());
 
         final DoubleCoordinate median = coords.get(coords.size() / 2);
-        this.median = new Coordinate(median.getLat(), median.getLng());
+        this.median = new CoordinateEntity(median.getLat(), median.getLng());
     }
 
     public Long getId() {
@@ -115,7 +115,7 @@ public class Route {
         this.user = user;
     }
 
-    public void setMedian(Coordinate c) {
+    public void setMedian(CoordinateEntity c) {
         this.median = c;
     }
 

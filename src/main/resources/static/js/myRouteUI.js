@@ -2,7 +2,7 @@ const RouteStops = [];
 const StopConnections = [];
 
 const createLineFromCoordinates = (coordinates) => {
-    const line = new ol.geom.LineString(coordinates).transform('EPSG:4326', 'EPSG:3857');
+    const line = formatOL(new ol.geom.LineString(coordinates));
     const feature = new ol.Feature({geometry: line});
     vectorSource.addFeature(feature);
 
@@ -20,30 +20,28 @@ const getConnectionCoordinates = (start, end) => {
         .then(res => res.features[ 0 ].geometry.coordinates);
 };
 
-const saveNewRoute = () => {
-    return fetch(`${API_URL_BASE}/routes`, {
-        method: "POST",
-        headers: {
-            "Content-Type": 'application/json',
-        },
-        body: JSON.stringify({
-            coordinates: StopConnections.map(
-                feature => feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326').getCoordinates())
-                .flat()
-                .map(c => [ c[ 1 ], c[ 0 ] ])
-                .flat()
-        }),
-    }).then(res => res.json());
-};
+const saveNewRoute = () => fetch(`${API_URL_BASE}/routes`, {
+    method: "POST",
+    headers: {
+        "Content-Type": 'application/json',
+    },
+    body: JSON.stringify({
+        coordinates: StopConnections.map(
+            feature => formatCommon(feature.getGeometry().clone()).getCoordinates())
+            .flat()
+            .map(c => [ c[ 1 ], c[ 0 ] ])
+            .flat()
+    }),
+}).then(res => res.json());
 
-const to4326 = (point) => point.clone().transform('EPSG:3857', 'EPSG:4326').flatCoordinates;
+const formatReq = (point) => formatCommon(point.clone()).flatCoordinates;
 
 const addRouteStop = (point) => {
     const lastPoint = RouteStops[ RouteStops.length - 1 ];
     RouteStops.push(point);
 
     if (RouteStops.length > 1) {
-        getConnectionCoordinates(to4326(lastPoint), to4326(point))
+        getConnectionCoordinates(formatReq(lastPoint), formatReq(point))
             .then(coordinates => {
                 const line = createLineFromCoordinates(coordinates);
                 StopConnections.push(line);
@@ -68,15 +66,6 @@ const routeForm = document.getElementById("route-form");
 const routesCol = document.getElementById("routes-sidebar");
 const routeView = document.getElementById("route-view");
 
-const hide = (elem) => elem.classList.add("hidden");
-const show = (elem) => elem.classList.remove("hidden");
-const closeRouteForm = () => routeForm.classList.add("closed");
-const showRouteForm = () => routeForm.classList.remove("closed");
-const showRouteView = () => routeView.classList.remove("closed");
-const closeRouteView = () => routeView.classList.add("closed");
-const showRoutesCol = () => routesCol.classList.remove("closed");
-const closeRoutesCol = () => routesCol.classList.add("closed");
-
 // on route form open
 document.getElementById("btn-add-route").addEventListener("click", () => {
     openRouteForm(document.getElementsByClassName("route-item").length + 1);
@@ -84,7 +73,7 @@ document.getElementById("btn-add-route").addEventListener("click", () => {
 });
 
 const openRouteForm = (routeIndex) => {
-    closeRoutesCol();
+    close(routesCol);
     document.getElementById("new-route-index").innerText = routeIndex;
 
     if (FORM_MODE !== FormModes.Create) {
@@ -93,21 +82,22 @@ const openRouteForm = (routeIndex) => {
         show(document.getElementById('new-route-label'))
     }
 
-    setTimeout(showRouteForm, AnimationDuration);
+    setTimeout(() => open(routeForm), AnimationDuration);
     setTimeout(clearMap, AnimationDuration * 2);
 };
 
 const openRouteView = (routeIndex) => {
-    closeRoutesCol();
+    close(routesCol);
     document.getElementById("route-index").innerText = routeIndex + 1;
-    setTimeout(showRouteView, AnimationDuration);
+    setTimeout(() => open(routeView), AnimationDuration);
 };
 
 // on route form close
 document.getElementById("route-form-cancel-btn").addEventListener("click", () => {
-    closeRouteForm();
+    close(routeForm);
+    RouteStops.length = 0;
     map.un('click', addPointFunc);
-    setTimeout(showRoutesCol, AnimationDuration);
+    setTimeout(() => open(routesCol), AnimationDuration);
     setTimeout(() => {
         clearMap();
         drawAllRoutes();
@@ -116,8 +106,8 @@ document.getElementById("route-form-cancel-btn").addEventListener("click", () =>
 
 // on route view close
 document.getElementById("route-back-btn").addEventListener("click", () => {
-    closeRouteView();
-    setTimeout(showRoutesCol, AnimationDuration);
+    close(routeView);
+    setTimeout(() => open(routesCol), AnimationDuration);
     setTimeout(() => {
         clearMap();
         drawAllRoutes();
@@ -176,20 +166,16 @@ document.getElementById("route-form-save-btn").addEventListener("click", () => {
 // === Delete init
 
 let DeleteRouteId;
-
 const deleteModal = document.getElementById("delete-route-modal");
-
-const close = (elem) => elem.classList.add("hidden");
-const open = (elem) => elem.classList.remove("hidden");
 
 // init modal close buttons
 document.querySelectorAll(".close-btn")
-    .forEach(elem => elem.addEventListener("click", (evt) => close(evt.path[ 1 ])));
+    .forEach(elem => elem.addEventListener("click", (evt) => hide(evt.path[ 1 ])));
 
 // show confirmation modal
 const preDelete = (e) => {
     DeleteRouteId = e.path[ 2 ].dataset.id;
-    open(deleteModal);
+    show(deleteModal);
 };
 
 const deleteRouteReq = (id) => fetch(`${API_URL_BASE}/routes/${id}`, {
@@ -198,7 +184,7 @@ const deleteRouteReq = (id) => fetch(`${API_URL_BASE}/routes/${id}`, {
 
 const deleteRoute = () => deleteRouteReq(DeleteRouteId).then(() => {
     DeleteRouteId = null;
-    close(deleteModal);
+    hide(deleteModal);
 });
 
 document.getElementById("btn-confirm-delete").addEventListener("click", deleteRoute);

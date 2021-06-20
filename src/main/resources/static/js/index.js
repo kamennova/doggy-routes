@@ -1,24 +1,21 @@
-const hide = (elem) => elem.classList.add('hidden');
-const show = (elem) => elem.classList.remove('hidden');
-
 const getRoutesMap = (lat, lng) => fetch(`${API_URL_BASE}/routes/details?lat=${lat}&lng=${lng}`)
     .then(res => res.json());
 
 const drawLine = (group) => {
-    const multi = new ol.geom.MultiLineString(group.routes).transform('EPSG:4326', 'EPSG:3857');
+    const multi = formatOL(new ol.geom.MultiLineString(group.routes));
     const feature = new ol.Feature({geometry: multi, dogs: group.dogs, type: 'line'});
     vectorSource.addFeature(feature);
     return feature;
 };
 
 const drawPoint = (point, id) => {
-    const geom = new ol.geom.Point(point.coordinate).transform('EPSG:4326', 'EPSG:3857');
+    const geom = formatOL(new ol.geom.Point(point.coordinate));
     const feature = new ol.Feature({type: 'point', geometry: geom, dogs: point.dogs, id});
     vectorSource.addFeature(feature);
 };
 
 const update = () => {
-    const point = new ol.geom.Point(MapView.getCenter()).transform('EPSG:3857', 'EPSG:4326').getCoordinates();
+    const point = formatCommon(new ol.geom.Point(MapView.getCenter())).getCoordinates();
     const zoom = MapView.getZoom();
 
     if (zoom < ReqZoom) {
@@ -48,7 +45,7 @@ const addAlert = (text) => {
 let OldZoom = MapView.getZoom();
 let OldCenter = MapView.getCenter();
 const ReqZoom = 14;
-const ZoomInAlert = "Наблизьте, щоб побачити маршрути";
+const showZoomInAlert = () => addAlert("Наблизьте, щоб побачити маршрути");
 
 map.on('movestart', () => OldZoom = MapView.getZoom());
 
@@ -62,7 +59,7 @@ map.on('moveend', () => {
         if (OldZoom < ReqZoom && zoomUpd >= ReqZoom) {
             clearAlerts();
         } else if (OldZoom >= ReqZoom && zoomUpd < ReqZoom) {
-            addAlert(ZoomInAlert);
+            showZoomInAlert();
         }
 
         update();
@@ -75,7 +72,7 @@ map.on('moveend', () => {
 });
 
 update();
-addAlert(ZoomInAlert);
+showZoomInAlert();
 
 const dogPopup = document.getElementById('dog-popup');
 
@@ -87,12 +84,7 @@ const hidePopup = () => {
 
 const getDogsByIds = (ids) => Dogs.filter(d => ids.includes(d.id));
 
-const displayDogs = (dogs, pixel) => {
-    while (dogPopup.hasChildNodes()) {
-        dogPopup.removeChild(dogPopup.firstChild);
-    }
-
-    dogs.forEach(dog => {
+const addToPopup = (dog) => {
         const div = document.createElement('div');
         const img = document.createElement('img');
         img.classList.add("avatar");
@@ -120,7 +112,14 @@ const displayDogs = (dogs, pixel) => {
         }
 
         dogPopup.appendChild(div);
-    });
+};
+
+const displayDogs = (dogs, pixel) => {
+    while (dogPopup.hasChildNodes()) {
+        dogPopup.removeChild(dogPopup.firstChild);
+    }
+
+    dogs.forEach(addToPopup);
 
     dogPopup.style.opacity = '0';
     show(dogPopup);

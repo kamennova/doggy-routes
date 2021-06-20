@@ -39,7 +39,6 @@ const vectorLayer = new ol.layer.Vector({
             })
         ]
     }
-
 });
 
 map.addLayer(vectorLayer);
@@ -49,6 +48,6 @@ const clearMap = () => vectorSource.clear();
 const addLineToMap = (polylineStr) => {
     const poly = new ol.format.Polyline();
     const feature = poly.readFeature(polylineStr);
-    feature.getGeometry().transform('EPSG:4326', 'EPSG:3857'); // coordinates from API come in diff. format
+    formatOL(feature.getGeometry()); // coordinates from API come in different format
     vectorSource.addFeature(feature);
 };

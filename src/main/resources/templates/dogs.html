@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head('Мої собаки')"></div>
+<head th:replace="fragments/head :: head('Мої собаки')"></head>
+
 <body>
-<div th:replace="fragments/menu :: menu(isSignedIn = true)"></div>
+
+<nav th:replace="fragments/menu :: menu(isSignedIn = true)"></nav>
 
 <main class="page-content">
 
@@ -13,7 +15,7 @@
     <div class="dogs-container">
         <article class="block item dog-item" th:if="${dogs}" th:each="dog : ${dogs}">
             <div class="row block-header">
-                <h2 class="title block-title" th:text="${dog.name}"></h2>
+                <h3 class="title block-title" th:text="${dog.name}"></h3>
                 <img src="img/female.svg" class="icon" th:if="${dog.sex == 'f'}"/>
                 <img src="img/male.svg" class="icon" th:if="${dog.sex == 'm'}"/>
             </div>
@@ -33,6 +35,7 @@
                     </span>
                 </div>
             </div>
+
             <div class="row btn-row right">
                 <button class="btn btn-smaller delete-dog-btn" th:data-id="${dog.id}">Видалити</button>
             </div>
@@ -75,7 +78,7 @@
                 </div>
 
                 <div class="form-control">
-                    <span class="label" style="color: white">Стать</span>
+                    <span class="label" style="opacity: 0">Стать</span>
 
                     <div class="switcher">
                         <input type="radio" name="dog-sex" id="sex-female" value="female" class="visually-hidden" checked>
@@ -92,7 +95,7 @@
             </div>
 
             <div class="row columns">
-                <div class="form-control" th:if="${breeds}" >
+                <div class="form-control" th:if="${breeds}">
                     <label class="label" for="dog-breed">
                         Порода
                     </label>
