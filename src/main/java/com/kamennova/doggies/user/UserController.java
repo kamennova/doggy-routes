@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,15 @@ class UserController {
             return ResponseEntity.badRequest().body(res);
         }
 
-        repository.save(new User(user.email, passwordEncoder.encode(user.password)));
+        byte[] address = new byte[0];
+        try {
+            if (user.address != null) {
+                address = service.encryptUserAddress(user.address);
+            }
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        repository.save(new User(user.email, passwordEncoder.encode(user.password), address));
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

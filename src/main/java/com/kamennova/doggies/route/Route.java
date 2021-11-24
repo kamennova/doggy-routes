@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "routes")
 public class Route {
-    Route() {
+    public Route() {
     }
 
     private @Id
@@ -117,6 +117,10 @@ public class Route {
 
     public void setMedian(CoordinateEntity c) {
         this.median = c;
+    }
+
+    public void setStart(CoordinateEntity c) {
+        this.start = c;
     }
 
     // todo move to coordinates?

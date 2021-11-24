@@ -17,12 +17,12 @@ public class RouteGroup {
     }
 
     public static ArrayList<Coordinates> group(List<Vector> vectors) {
-        final ArrayList<Coordinates> startGroups = formStartGroups(vectors);
+        final ArrayList<Coordinates> initGroups = formInitGroups(vectors);
         // todo connect
-        return startGroups;
+        return initGroups;
     }
 
-    private static ArrayList<Coordinates> formStartGroups(List<Vector> vectors) {
+    private static ArrayList<Coordinates> formInitGroups(List<Vector> vectors) {
         final ArrayList<Coordinates> routes = new ArrayList<>();
 
         for (Vector vector : vectors) {

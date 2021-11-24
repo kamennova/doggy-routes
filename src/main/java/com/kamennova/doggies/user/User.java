@@ -22,6 +22,9 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Column(name="address")
+    private byte[] addressEncoded;
+
     @OneToMany(targetEntity = Dog.class, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "owner_id")
     private Set<Dog> dogs;
@@ -30,12 +33,13 @@ public class User {
     @JoinColumn(name = "user_id")
     private Set<Route> routes;
 
-    User() {
+    public User() {
     }
 
-    User(String email, String passwordHash) {
+    User(String email, String passwordHash, byte[] address) {
         this.email = email;
         this.passwordHash = passwordHash;
+        this.addressEncoded = address;
     }
 
     User(User user) {
@@ -93,11 +97,23 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.email);
+        return Objects.hash(this.id);
     }
 
     @Override
     public String toString() {
         return "User{" + "id=" + this.id + ", email='" + this.email + '}';
+    }
+
+    public void setRoutes(Set<Route> routes) {
+        this.routes = routes;
+    }
+
+    public void setAddress(String address) {
+
+    }
+
+    public byte[] getAddressEncoded(){
+        return addressEncoded;
     }
 }
